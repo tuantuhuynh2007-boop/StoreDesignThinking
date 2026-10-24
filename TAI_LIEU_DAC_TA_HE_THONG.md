@@ -1,89 +1,66 @@
 # ĐẶC TẢ HỆ THỐNG & KẾ HOẠCH TRIỂN KHAI
-## ỨNG DỤNG ĐẶT BÀN, HÀNG CHỜ THỜI GIAN THỰC & BỘ SƯU TẬP LINH VẬT SỐ THEO MÙA (STORE DESIGN THINKING)
+## WEB APP DI ĐỘNG (MOBILE-FIRST / PWA): ĐẶT BÀN, HÀNG CHỜ LIVE & BỘ SƯU TẬP LINH VẬT SỐ THEO MÙA
+
+> **TIÊU CHUẨN THIẾT KẾ CỐT LÕI: MOBILE-FIRST & PWA (PROGRESSIVE WEB APP)**  
+> Ứng dụng được tối ưu hóa 100% cho màn hình điện thoại thông minh (iOS & Android). Khách hàng chỉ cần quét mã QR tại bàn/quầy là mở tức thì trên trình duyệt di động (Safari/Chrome), không cần tải app rườm rà nhưng vẫn có trải nghiệm mượt mà, hỗ trợ cài đặt icon ra màn hình chính và nhận thông báo rung khi đến lượt.
 
 ---
 
-## PHẦN 1: BẢNG TỔNG HỢP VÀ CỤ THỂ HOÁ CÁC TÍNH NĂNG
+## PHẦN 1: ĐẶC TẢ TÍNH NĂNG TỐI ƯU HOÀN TOÀN CHO ĐIỆN THOẠI DI ĐỘNG
 
-Hệ thống được chia làm 2 phân hệ độc lập nhưng đồng bộ dữ liệu thời gian thực (Real-time):
+### A. PHÂN HỆ KHÁCH HÀNG (Mobile Customer Web App)
 
-### A. PHÂN HỆ KHÁCH HÀNG (Customer Web App - Tối ưu cho Điện thoại di động)
-Khách hàng không cần cài ứng dụng từ App Store/CH Play, chỉ cần quét mã QR tại bàn, trên fanpage hoặc trước cửa quán là mở được ngay.
+```mermaid
+flowchart TD
+    A["1. QUÉT MÃ QR TẠI QUÁN<br/>(Bằng Camera điện thoại / Zalo)"] --> B["2. VÀO NGAY WEB APP<br/>(Không cần tải, giao diện dọc vừa vặn)"]
+    B --> C["3. THANH ĐIỀU HƯỚNG ĐÁY MÀN HÌNH (Bottom Nav)<br/>[Trang chủ] - [Hàng chờ] - [Hộp quà Gacha] - [Sổ Vịt] - [Voucher]"]
+    C --> D["4. TƯƠNG TÁC 1 TAY (Thumb-Zone)<br/>Rung phản hồi (Haptic) khi có thông báo"]
+```
 
-| Nhóm chức năng | Tên tính năng cụ thể | Mô tả chi tiết trải nghiệm người dùng |
+| Nhóm chức năng | Tối ưu hóa đặc thù cho Điện thoại di động (Mobile UX) | Chi tiết tính năng |
 |---|---|---|
-| **1. Đặt bàn trước (Reservation)** | • Chọn lịch & khung giờ<br>• Chọn khu vực ngồi<br>• Nhận mã đặt bàn (QR Code) | • Khách chọn ngày, giờ đến, số lượng người lớn/trẻ em.<br>• Chọn vị trí: Trong nhà, ngoài trời, phòng riêng, gần cửa sổ.<br>• Nhập tên, số điện thoại, ghi chú đặc biệt (sinh nhật, dị ứng đồ ăn).<br>• Nhận vé đặt bàn điện tử kèm mã QR để xuất trình khi đến quán. |
-| **2. Theo dõi hàng chờ Live (Live Queue)** | • Lấy số thứ tự online<br>• Màn hình Live Tracking<br>• Cảnh báo sắp đến lượt | • Quét mã QR tại cửa quán để lấy số thứ tự điện tử.<br>• Hiển thị số đang phục vụ và số của khách theo thời gian thực (*"Phía trước bạn còn 2 lượt"*).<br>• Dự báo thời gian chờ ước tính (VD: ~15 phút).<br>• Khi còn 1 lượt: Màn hình đổi màu vàng + rung báo hiệu chuẩn bị quay lại quầy. Khi đến lượt: Màn hình chuyển xanh sáng rực rỡ báo *"Mời bạn vào bàn!"*. |
-| **3. Mở hộp quà bí ẩn (Gacha Mascot)** | • Mở hộp sau khi ghé quán<br>• Animation xé hộp quà<br>• Nhận Sticker Vịt ngẫu nhiên | • Sau mỗi lần thanh toán hoặc hoàn thành lượt ngồi tại quán, tài khoản nhận 1 lượt mở hộp quà.<br>• Hiệu ứng mở hộp quà 3D lắc lư vui mắt.<br>• Mở ra 1 trong 6 biểu cảm chú Vịt của mùa đang kích hoạt (Halloween, Giáng Sinh, Tết, Trung Thu). |
-| **4. Sổ sưu tập Sticker Vịt (Digital Album)** | • Bộ sưu tập 4 mùa x 6 biểu cảm<br>• Hiệu ứng bóng đen bí ẩn<br>• Khoe bộ sưu tập | • Giao diện dạng lưới (Grid) 6 ô biểu cảm: *Giận dỗi, Chào hỏi, Mếu máo, Chu mỏ, Ngạc nhiên, Vui vẻ*.<br>• Sticker nào đã mở thì sáng rõ màu 3D; sticker chưa có hiển thị bóng đen (Silhouette) có dấu chấm hỏi `?` thôi thúc mở tiếp.<br>• Xem lại được các mùa trước (Lưu trữ vĩnh viễn trong tài khoản).<br>• Nút chia sẻ ảnh chú Vịt lên mạng xã hội kèm lời chúc dễ thương. |
-| **5. Tích điểm & Đổi Voucher (Loyalty)** | • Tích điểm theo chi tiêu<br>• Chợ Voucher ưu đãi<br>• Mã giảm giá 1 lần (Single-use QR) | • Tự động tích điểm khi có hóa đơn (VD: 10.000 VNĐ = 1 điểm).<br>• Đổi điểm lấy các voucher: Giảm 20k, Tặng bánh ngọt, Miễn phí up-size.<br>• Voucher có thời hạn sử dụng và mã QR riêng để đưa thu ngân quét áp dụng. |
+| **1. Tiếp cận tức thì (Instant QR Access & PWA)** | • Không cần tạo tài khoản mật khẩu phức tạp.<br>• Hỗ trợ nút *"Thêm vào màn hình chính"* (Add to Home Screen) tạo icon chú Vịt như app thật.<br>• Dung lượng siêu nhẹ (< 2MB) tải trong 1 giây qua 4G. | • Quét mã QR tại bàn, quầy đón khách hoặc từ link mạng xã hội để vào thẳng app.<br>• Tự động ghi nhớ thiết bị/SĐT để không phải đăng nhập lại mỗi lần ghé quán. |
+| **2. Đặt bàn nhanh (Mobile Booking)** | • Form cuộn mượt (Scroll Wheel) chọn ngày & giờ.<br>• Tối ưu bàn phím số tự động bật khi nhập SĐT.<br>• Lưu vé đặt chỗ trực tiếp vào Apple Wallet / Google Wallet hoặc chụp màn hình. | • Chọn nhanh số lượng khách (1-2 người, 3-4 người, nhóm đông).<br>• Chọn khu vực ngồi trực quan bằng hình minh họa.<br>• Nhận mã QR vé đặt chỗ hiển thị rõ nét trên màn hình để nhân viên quét. |
+| **3. Theo dõi hàng chờ Live (Mobile Live Queue)** | • Chế độ toàn màn hình không tắt đèn (Wake Lock API).<br>• Rung điện thoại (Vibration API) và đổi màu màn hình khi đến lượt.<br>• Thông báo đẩy (Web Push Notification) ngay cả khi khách khóa màn hình hoặc mở tab khác. | • Khách lấy số xong có thể cất máy vào túi hoặc đi dạo xung quanh.<br>• Màn hình hiển thị số to, rõ: *"Còn 2 số nữa đến bạn (khoảng 10 phút)"*.<br>• Khi đến lượt: Điện thoại rung liên tục + màn hình chuyển xanh sáng kèm âm thanh chuông báo. |
+| **4. Mở hộp quà Gacha Vịt (Interactive Mobile Gacha)** | • Tương tác chạm: Chạm ngón tay để xé ruy-băng / lắc hộp quà.<br>• Rung nhẹ từng nhịp khi mở hộp (Tạo cảm giác như mở đồ chơi thật).<br>• Hiệu ứng ánh sáng hào quang bung ra chú Vịt 3D. | • Sau khi thanh toán, khách chạm mở hộp quà.<br>• Tự động sinh thẻ ảnh chú Vịt vuông chuẩn tỉ lệ 9:16 để đăng ngay lên Story Instagram/Facebook/TikTok chỉ với 1 nút chạm. |
+| **5. Sổ sưu tập Vịt Vàng (Sticker Album 4 Mùa)** | • Thiết kế dạng thẻ bài (Card Grid) 2 cột x 3 dòng vừa khít màn hình điện thoại (không cần cuộn nhiều).<br>• Vuốt ngang (Swipe) mượt mà để chuyển đổi qua lại giữa các mùa.<br>• Chạm vào từng chú Vịt để nghe tiếng kêu "Cạp cạp" vui nhộn và xem thông tin ngày nhận. | • 4 Mùa: Halloween (Bí ngô), Giáng Sinh (Khăn len), Trung Thu (Đèn lồng), Tết (Áo dài).<br>• 6 Biểu cảm: *Giận dỗi, Chào hỏi, Mếu máo, Chu mỏ, Ngạc nhiên, Vui vẻ*.<br>• Chú vịt chưa mở hiện bóng đen `?`. Thanh tiến độ: *"Bạn đã sưu tập 4/6 chú vịt Halloween"*. |
+| **6. Kho Voucher & Ví ưu đãi** | • Hiển thị mã vạch / mã QR tự động tăng độ sáng màn hình lên mức cao nhất để máy quét POS quét dễ dàng.<br>• Đếm ngược thời gian hết hạn voucher rõ ràng. | • Khách đưa điện thoại cho thu ngân quét trong 1 giây để trừ tiền.<br>• Đổi điểm tích lũy lấy voucher ngay trên điện thoại. |
 
 ---
 
-### B. PHÂN HỆ QUẢN LÝ & NHÂN VIÊN (Admin / Staff Dashboard)
-Giao diện quản trị vận hành trên iPad quầy thu ngân, Laptop hoặc điện thoại của quản lý.
+### B. PHÂN HỆ QUẢN LÝ TỐI ƯU CHO DI ĐỘNG (Mobile / Tablet Staff Dashboard)
+Nhân viên phục vụ và quản lý không cần ngồi máy tính cồng kềnh, có thể cầm **điện thoại hoặc iPad mini** đi lại linh hoạt trong quán:
 
-| Nhóm chức năng | Tên tính năng cụ thể | Mô tả chi tiết vai trò của Quản lý |
-|---|---|---|
-| **1. Cấu hình Mùa & Linh vật (Season Control)** | • Chuyển đổi mùa 1-Click<br>• Cài đặt tỷ lệ rớt (Drop Rate)<br>• Cấu hình phần thưởng trọn bộ | • Menu chọn mùa: *Halloween / Giáng Sinh / Tết / Trung Thu / Thường* ➔ Toàn bộ giao diện khách hàng và kho quà Gacha lập tức đổi chủ đề.<br>• Tự chỉnh độ hiếm: Vịt Chào hỏi (35%), Vịt Vui vẻ (30%), Vịt Ngạc nhiên (5% - Siêu hiếm).<br>• Cài quà tặng đặc biệt khi khách gom đủ bộ 6/6 biểu cảm của mùa. |
-| **2. Bảng điều phối hàng chờ (Queue Dispatcher)** | • Nút "Gọi số tiếp theo"<br>• Nút "Bỏ lượt / Vắng mặt"<br>• Bật/Tắt tiếp nhận hàng chờ | • Nhân viên bấm 1 nút để gọi lượt tiếp theo ➔ Hệ thống tự động push thông báo đến điện thoại của khách đó.<br>• Quản lý danh sách bàn đang trống để chỉ định khách vào bàn 2 người, 4 người hoặc bàn lớn.<br>• Tạm dừng tiếp nhận hàng chờ khi quán quá tải giờ cao điểm. |
-| **3. Quản lý Đặt bàn (Booking Manager)** | • Xem lịch theo ngày/ca<br>• Duyệt / Từ chối đặt bàn<br>• Khóa khung giờ kín chỗ | • Hiển thị danh sách khách đặt bàn theo ca Trưa / Chiều / Tối.<br>• Chủ động khóa các khung giờ cao điểm đã hết bàn để khách không đặt được nữa. |
-| **4. Quản lý & Quét Voucher (POS Scanner)** | • Tạo mã Voucher mới<br>• Quét QR voucher tại quầy | • Tạo chương trình khuyến mãi linh hoạt theo sự kiện.<br>• Camera quét trực tiếp mã QR trên điện thoại khách để trừ voucher và tích điểm tự động. |
+1. **Giao diện nút bấm siêu to (Big Touch Targets):**
+   * Nút **[ GỌI SỐ TIẾP THEO ]** thiết kế to bản ở góc dưới màn hình, nhân viên chỉ cần 1 cú chạm ngón cái là gọi khách.
+2. **Quét mã Voucher & Mã Đặt bàn bằng chính Camera điện thoại nhân viên:**
+   * Tích hợp máy quét QR thẳng vào trình duyệt web, không cần mua máy quét chuyên dụng.
+3. **Chuyển đổi Mùa linh hoạt (Season Switcher):**
+   * Quản lý gạt nút chuyển mùa trên điện thoại bất cứ lúc nào: Lập tức toàn bộ điện thoại khách hàng đổi theme và đổi bộ quà tặng Vịt.
 
 ---
 
-## PHẦN 2: LỘ TRÌNH 6 BƯỚC TRIỂN KHAI CHI TIẾT (ROADMAP)
+## PHẦN 2: NGUYÊN TẮC THIẾT KẾ GIAO DIỆN DI ĐỘNG (MOBILE UX RULES)
+
+1. **Vùng ngón tay cái (Thumb-Zone Design):**
+   * Mọi nút bấm quan trọng đều nằm ở 1/3 dưới cùng của màn hình.
+   * Menu chính sử dụng **Bottom Navigation Bar (Thanh điều hướng dưới đáy)** gồm 5 icon:
+     `[ 🏠 Trang chủ ]  [ ⏳ Hàng chờ ]  [ 🎁 Mở quà ]  [ 🦆 Sổ Vịt ]  [ 🎟️ Voucher ]`
+2. **Tối ưu tốc độ tải hình ảnh:**
+   * 24 hình ảnh chú Vịt Vàng 3D được nén định dạng hiện đại **WebP** (dung lượng siêu nhẹ chỉ ~40KB/ảnh nhưng độ sắc nét cực cao).
+   * Khách dù dùng mạng 4G yếu tại quán vẫn tải hình ảnh tức thì.
+3. **Phản hồi xúc giác (Haptic Feedback):**
+   * Khi chạm vào nút hoặc khi mở hộp quà trúng Vịt hiếm, điện thoại rung nhẹ theo nhịp tạo cảm giác hào hứng, thích thú.
+
+---
+
+## PHẦN 3: LỘ TRÌNH TRIỂN KHAI THEO CHUẨN MOBILE
 
 ```mermaid
 flowchart LR
-    B1["Bước 1<br/>Thiết kế UI/UX<br/>(Wireframe)"] --> B2["Bước 2<br/>Mô hình hóa<br/>Database"]
-    B2 --> B3["Bước 3<br/>Xây dựng bản Demo<br/>tương tác (MVP)"]
-    B3 --> B4["Bước 4<br/>Lập trình Backend<br/>& Realtime Queue"]
-    B4 --> B5["Bước 5<br/>Xây dựng trang<br/>Admin Quản lý"]
-    B5 --> B6["Bước 6<br/>Thử nghiệm &<br/>Triển khai tại Quán"]
+    B1["Bước 1<br/>UI/UX Mobile<br/>(Chuẩn tỉ lệ 9:16)"] --> B2["Bước 2<br/>Database & API<br/>(Tối ưu tải nhẹ 4G)"]
+    B2 --> B3["Bước 3<br/>Demo Web Mobile<br/>(Test trên Safari/Chrome)"]
+    B4["Bước 4<br/>WebSocket Real-time<br/>& Rung/Báo trên Mobile"]
+    B5["Bước 5<br/>Trang Quản lý trên<br/>iPad / Phone thu ngân"]
+    B6["Bước 6<br/>In mã QR tại bàn<br/>& Chạy thực tế tại quán"]
 ```
-
-### Bước 1: Thiết kế giao diện người dùng (UI/UX & Wireframe)
-* **Thời gian dự kiến:** 3 - 5 ngày.
-* **Mục tiêu:**
-  * Vẽ khung màn hình trên điện thoại (Mobile Wireframe) cho 4 tab chính: Trang chủ (Đặt bàn + Hàng chờ), Hộp quà Gacha, Sổ Sticker Vịt, Kho Voucher.
-  * Thiết kế Bộ Theme 4 Mùa (Màu sắc, icon, hiệu ứng tuyết rơi/lá rơi).
-  * Kiểm thử cảm xúc người dùng (Đảm bảo thao tác nhanh dưới 3 lần chạm).
-
-### Bước 2: Thiết kế Kiến trúc Dữ liệu (Database Architecture)
-* **Thời gian dự kiến:** 2 - 3 ngày.
-* **Mục tiêu:**
-  * Tạo các bảng dữ liệu chuẩn:
-    * `Users` (Khách hàng, số điện thoại, điểm tích lũy).
-    * `Reservations` (Thông tin đặt bàn, ngày giờ, số khách, trạng thái).
-    * `Queues` (Số thứ tự, giờ lấy số, trạng thái: Chờ / Đang phục vụ / Đã xong).
-    * `Mascots` (Danh mục 24 chú vịt: mùa, tên biểu cảm, hình ảnh, độ hiếm).
-    * `UserInventory` (Kho sticker khách đã sở hữu, ngày mở được).
-    * `Vouchers` & `UserVouchers` (Danh mục mã giảm giá).
-
-### Bước 3: Xây dựng Bản thử nghiệm tương tác (Clickable MVP Frontend)
-* **Thời gian dự kiến:** 4 - 6 ngày.
-* **Mục tiêu:**
-  * Lập trình giao diện HTML5/CSS3/JavaScript mượt mà chạy trên trình duyệt.
-  * Tích hợp hình ảnh chú Vịt Vàng thật vào giao diện.
-  * Tạo hiệu ứng mở hộp quà và chuyển đổi thử 4 mùa trực tiếp.
-
-### Bước 4: Lập trình Backend & Tính năng Thời gian thực (Real-time Engine)
-* **Thời gian dự kiến:** 5 - 7 ngày.
-* **Công nghệ khuyên dùng:** Node.js (Express) + Socket.io (hoặc Firebase Realtime) + PostgreSQL/MongoDB.
-* **Mục tiêu:**
-  * Xử lý WebSocket để khi nhân viên bấm "Gọi số" ở Admin thì điện thoại của khách nhảy số ngay lập tức trong 0.1 giây.
-  * Thuật toán bốc thăm ngẫu nhiên (RNG) cho hộp quà sticker dựa trên tỉ lệ % do quán cài đặt.
-
-### Bước 5: Hoàn thiện Bảng Quản trị (Admin Dashboard)
-* **Thời gian dự kiến:** 4 - 5 ngày.
-* **Mục tiêu:**
-  * Màn hình cảm ứng tối ưu cho nhân viên: Chạm gọi số, chạm xác nhận bàn, quét mã voucher bằng camera.
-  * Trang cài đặt cho quản lý: Nút gạt chuyển mùa, cài đặt số lượng bàn và khung giờ mở cửa.
-
-### Bước 6: Kiểm thử nội bộ & Triển khai thực tế tại quán (Go-Live)
-* **Thời gian dự kiến:** 3 - 5 ngày.
-* **Mục tiêu:**
-  * Đặt mã QR tại từng bàn và quầy đón khách trước cửa quán.
-  * Đào tạo nhân viên cách gọi số và quét mã cho khách.
-  * Theo dõi phản hồi của khách hàng trong tuần đầu tiên để tối ưu hóa.
