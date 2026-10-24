@@ -1,0 +1,207 @@
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+  <meta charset='utf-8'>
+  <title>Đặc Tả Dự Án Spicy Box Smart Web App</title>
+  <!--[if gte mso 9]>
+  <xml>
+    <w:WordDocument>
+      <w:View>Print</w:View>
+      <w:Zoom>100</w:Zoom>
+      <w:DoNotOptimizeForBrowser/>
+    </w:WordDocument>
+  </xml>
+  <![endif]-->
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      line-height: 1.6;
+      color: #2D1A10;
+      background-color: #FFFFFF;
+      margin: 40px;
+    }
+    h1 {
+      color: #C5221F;
+      font-size: 26pt;
+      border-bottom: 3pt solid #C5221F;
+      padding-bottom: 8px;
+      margin-top: 20px;
+    }
+    h2 {
+      color: #4A2E1B;
+      font-size: 18pt;
+      border-bottom: 1pt solid #CBB8A9;
+      padding-bottom: 5px;
+      margin-top: 28px;
+    }
+    h3 {
+      color: #7A5339;
+      font-size: 14pt;
+      margin-top: 18px;
+    }
+    p, li {
+      font-size: 11pt;
+    }
+    .highlight-box {
+      background-color: #FDFBF7;
+      border-left: 5pt solid #E5A93C;
+      padding: 14px 18px;
+      margin: 18px 0;
+      border-radius: 6px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+    }
+    th {
+      background-color: #4A2E1B;
+      color: #FFFFFF;
+      font-weight: bold;
+      padding: 10px;
+      border: 1pt solid #4A2E1B;
+      text-align: left;
+      font-size: 10.5pt;
+    }
+    td {
+      padding: 9px 10px;
+      border: 1pt solid #EADFD5;
+      font-size: 10pt;
+    }
+    tr:nth-child(even) {
+      background-color: #FAF6F0;
+    }
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 99px;
+      font-size: 9pt;
+      font-weight: bold;
+    }
+    .badge-red { background-color: #FDE8E8; color: #C5221F; }
+    .badge-gold { background-color: #FEF7E6; color: #B45309; }
+    .badge-green { background-color: #DCFCE7; color: #166534; }
+  </style>
+</head>
+<body>
+
+  <h1>SPICY BOX SMART WEB APP</h1>
+  <p><strong>HỆ THỐNG ĐẶT BÀN, HÀNG CHỜ LIVE & BỘ SƯU TẬP LINH VẬT SỐ 4 MÙA</strong></p>
+  
+  <div class="highlight-box">
+    <strong>Thương hiệu:</strong> Chuỗi nhà hàng Buffet Lẩu Tokpokki Spicy Box (Việt Nam)<br>
+    <strong>Phương pháp phát triển:</strong> Tư duy thiết kế (Design Thinking — Lấy trải nghiệm khách hàng làm trung tâm)<br>
+    <strong>Nền tảng kỹ thuật:</strong> Mobile-First Web App / PWA (Quét mã QR dùng tức thì không cần tải app)<br>
+    <strong>Repository GitHub:</strong> https://github.com/tuantuhuynh2007-boop/StoreDesignThinking.git
+  </div>
+
+  <h2>1. BỐI CẢNH & NỖI ĐAU CỦA THỰC KHÁCH CẦN GIẢI QUYẾT</h2>
+  <p>Spicy Box tại các trung tâm thương mại lớn (Vincom, Gigamall, Emart...) vào khung giờ vàng cuối tuần luôn trong tình trạng quá tải. Khách hàng phải đứng xếp hàng chờ đợi từ 30 - 45 phút gây ức chế, mỏi chân và nhiều khách đã bỏ sang quán khác.</p>
+  <p><strong>Giải pháp của hệ thống:</strong></p>
+  <ul>
+    <li><strong>Hàng chờ thời gian thực (Live Queue):</strong> Quét mã QR tại cửa quán để nhận số thứ tự điện tử. Khách thong thả đi dạo mua sắm trong TTTM; khi còn 2 lượt, điện thoại rung chuông báo để quay lại nhận bàn.</li>
+    <li><strong>Đặt bàn tiệc trước thông minh:</strong> Chọn ca trưa/tối, số lượng vé buffet, vị sốt lẩu ưu tiên và nhận mã QR giữ chỗ.</li>
+    <li><strong>Blind Box Chú Vịt Vàng theo mùa:</strong> Mỗi lần dùng bữa xong được mở 1 hộp quà bí ẩn 3D sưu tập chú Vịt Vàng theo 4 Mùa x 6 Biểu cảm. Gom đủ bộ được tặng quà lớn (Vòng phô mai bắp, đĩa bò Mỹ).</li>
+  </ul>
+
+  <h2>2. TRIẾT LÝ THIẾT KẾ & BẢNG MÀU DESIGN TOKENS</h2>
+  <p>Thiết kế theo phong cách <strong>Tối giản (Minimalism)</strong> kết hợp Mộc mạc ấm cúng (Japandi) chuẩn không gian nhà hàng lẩu Hàn Quốc:</p>
+  <table>
+    <tr>
+      <th>Màu Sắc</th>
+      <th>Mã Hex</th>
+      <th>Ý Nghĩa & Vị Trí Ứng Dụng</th>
+    </tr>
+    <tr>
+      <td><strong>Trắng Kem</strong></td>
+      <td>#FDFBF7</td>
+      <td>Nền toàn bộ ứng dụng, tạo khoảng thở sạch sẽ, không gây mỏi mắt.</td>
+    </tr>
+    <tr>
+      <td><strong>Nâu Gỗ Sồi</strong></td>
+      <td>#4A2E1B / #7A5339</td>
+      <td>Màu chữ tiêu đề, viền thẻ, mang lại cảm giác ấm cúng như bàn gỗ quán ăn.</td>
+    </tr>
+    <tr>
+      <td><strong>Đỏ Spicy Box</strong></td>
+      <td>#C5221F</td>
+      <td>Màu sốt lẩu Tokpokki cay nồng, dùng cho các nút bấm chính (CTA) và hàng chờ.</td>
+    </tr>
+    <tr>
+      <td><strong>Vàng Hoàng Kim</strong></td>
+      <td>#E5A93C</td>
+      <td>Màu viền phô mai bắp béo ngậy, ngôi sao điểm thưởng và ánh hào quang mở quà.</td>
+    </tr>
+  </table>
+
+  <h2>3. HỆ SINH THÁI TÍNH NĂNG</h2>
+  <h3>A. Phía Khách hàng (Mobile Web App)</h3>
+  <ul>
+    <li><strong>Live Queue:</strong> Xem số đang phục vụ và số của mình (VD: A-18 vs A-20), đếm ngược số phút ước tính.</li>
+    <li><strong>Đặt bàn Buffet:</strong> Chọn chi nhánh, ngày giờ, số lượng vé người lớn/trẻ em, cấp độ cay.</li>
+    <li><strong>Mở Hộp Quà Blind Box:</strong> Hiệu ứng hộp quà 3D rung lắc và bung mở ra chú Vịt Vàng ngẫu nhiên.</li>
+    <li><strong>Sổ Sưu Tập Vịt 4 Mùa:</strong> Lưới 6 ô biểu cảm (Vịt đã có sáng rõ; vịt chưa có hiện bóng đen ?). Chuyển đổi qua lại 4 mùa linh hoạt.</li>
+    <li><strong>Ví Ớt Vàng 🌶️:</strong> Tích điểm theo hóa đơn, đổi các voucher món ngon tại bàn.</li>
+  </ul>
+
+  <h3>B. Phía Quản lý & Nhân viên (Staff POS Dashboard)</h3>
+  <ul>
+    <li><strong>Bộ chuyển mùa 1-Click:</strong> Quản lý chọn mùa (Halloween, Noel, Tết, Trung Thu) ➔ Toàn bộ web khách đổi theme và kho quà vịt.</li>
+    <li><strong>Trạm gọi số hàng chờ:</strong> Nút to chạm ngón cái <em>[ 🔔 GỌI SỐ TIẾP THEO ]</em>, <em>[ ❌ Khách vắng mặt ]</em>, <em>[ ⏸️ Tạm dừng nhận khách ]</em>.</li>
+    <li><strong>Cấp lượt mở hộp quà:</strong> Nhập số bàn/hóa đơn thanh toán để cấp lượt mở hộp cho khách.</li>
+    <li><strong>Quét mã Voucher:</strong> Camera quét mã QR của khách trong 1 giây để trừ tiền.</li>
+  </ul>
+
+  <h2>4. DANH MỤC 24 CHÚ VỊT VÀNG LINH VẬT 4 MÙA</h2>
+  <p>Toàn bộ 24 file ảnh PNG chất lượng cao đã được cắt rời và lưu trữ tại thư mục <code>assets/ducks/</code>:</p>
+  <table>
+    <tr>
+      <th>Mùa (Chủ Đề)</th>
+      <th>6 Biểu Cảm Cố Định</th>
+      <th>Độ Hiếm & Tỷ Lệ Rơi</th>
+      <th>Trang Phục Đặc Trưng</th>
+    </tr>
+    <tr>
+      <td><strong>🎃 Mùa Halloween</strong></td>
+      <td>Giận dỗi, Chào hỏi, Mếu máo, Chu mỏ, Ngạc nhiên, Vui vẻ</td>
+      <td>Common (80%), Rare (15%), Legendary (5%)</td>
+      <td>Đội nón bí ngô rùng rợn dễ thương</td>
+    </tr>
+    <tr>
+      <td><strong>❄️ Mùa Giáng Sinh</strong></td>
+      <td>Giận dỗi, Chào hỏi, Mếu máo, Chu mỏ, Ngạc nhiên, Vui vẻ</td>
+      <td>Common (80%), Rare (15%), Legendary (5%)</td>
+      <td>Đội mũ len đỏ, quàng khăn len, cây thông tuyết</td>
+    </tr>
+    <tr>
+      <td><strong>🥮 Mùa Trung Thu</strong></td>
+      <td>Giận dỗi, Chào hỏi, Mếu máo, Chu mỏ, Ngạc nhiên, Vui vẻ</td>
+      <td>Common (80%), Rare (15%), Legendary (5%)</td>
+      <td>Cầm lồng đèn ông sao, áo gấm trăng rằm</td>
+    </tr>
+    <tr>
+      <td><strong>🧧 Mùa Tết Nguyên Đán</strong></td>
+      <td>Giận dỗi, Chào hỏi, Mếu máo, Chu mỏ, Ngạc nhiên, Vui vẻ</td>
+      <td>Common (80%), Rare (15%), Legendary (5%)</td>
+      <td>Áo dài đỏ hoa mai, câu đối và bánh chưng</td>
+    </tr>
+  </table>
+
+  <h2>5. KIẾN TRÚC KỸ THUẬT & CƠ SỞ DỮ LIỆU</h2>
+  <ul>
+    <li><strong>Frontend:</strong> Next.js 14 / React + Tailwind CSS + Framer Motion (60fps trên di động).</li>
+    <li><strong>Backend:</strong> Node.js (TypeScript) + Fastify / Express + WebSocket (Socket.io) thời gian thực.</li>
+    <li><strong>Database:</strong> PostgreSQL (chạy trên Supabase / Neon DB) với 9 bảng dữ liệu quan hệ chặt chẽ:
+      <code>stores</code>, <code>users</code>, <code>queues</code>, <code>reservations</code>, <code>mascots</code>, <code>user_mascots</code>, <code>vouchers</code>, <code>user_vouchers</code>, <code>gacha_tokens</code>.
+    </li>
+  </ul>
+
+  <h2>6. BẢO MẬT & QUY TẮC CHỐNG GIAN LẬN</h2>
+  <ul>
+    <li><strong>Chống lấy số ảo:</strong> Bắt buộc quét mã QR động tại cửa quán hoặc kiểm tra GPS trong bán kính 100m.</li>
+    <li><strong>Xử lý trôi số:</strong> Giữ chỗ ưu tiên 10 phút sau 3 lần gọi chuông trước khi hủy số.</li>
+    <li><strong>Chống hack lượt mở quà:</strong> Token mở quà được cấp và ký số duy nhất từ máy thu ngân khi thanh toán bill.</li>
+    <li><strong>Tái chế sticker trùng:</strong> Đổi 3 chú vịt trùng lấy 1 lượt mở mới hoặc 15 Ớt Vàng.</li>
+  </ul>
+
+</body>
+</html>
