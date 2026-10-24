@@ -15,8 +15,21 @@ const DATES = Array.from({ length: 5 }, (_, i) => {
   };
 });
 
-const NOON_SLOTS = ['11:30', '12:00', '12:30', '13:00'];
-const EVENING_SLOTS = ['17:30', '18:00', '18:30', '19:00', '19:30'];
+// Spicy Box hoạt động 09:30 – 22:00, mỗi 30 phút
+const ALL_SLOTS = [
+  '09:30','10:00','10:30','11:00','11:30',
+  '12:00','12:30','13:00','13:30','14:00','14:30',
+  '15:00','15:30','16:00','16:30','17:00','17:30',
+  '18:00','18:30','19:00','19:30','20:00','20:30',
+  '21:00','21:30','22:00',
+];
+// Phân ca theo giờ
+const SESSION_SLOTS: { label: string; emoji: string; slots: string[] }[] = [
+  { label: 'Buổi sáng', emoji: '🌅', slots: ALL_SLOTS.filter(s => { const h = parseInt(s); return h >= 9 && h < 12; }) },
+  { label: 'Buổi trưa',  emoji: '☀️',  slots: ALL_SLOTS.filter(s => { const h = parseInt(s); return h >= 12 && h < 15; }) },
+  { label: 'Buổi chiều', emoji: '🌤️', slots: ALL_SLOTS.filter(s => { const h = parseInt(s); return h >= 15 && h < 18; }) },
+  { label: 'Buổi tối',   emoji: '🌙', slots: ALL_SLOTS.filter(s => { const h = parseInt(s); return h >= 18; }) },
+];
 const SPICY_LEVELS = [
   { key: 'mild', label: '🌶️ Cay nhẹ', desc: 'Hơi tê tê nhẹ' },
   { key: 'medium', label: '🌶️🌶️ Cay vừa', desc: 'Chuẩn Hàn Quốc' },
@@ -285,47 +298,40 @@ export function App() {
                     ))}
                   </div>
 
-                  {/* 2. Khung giờ */}
-                  <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', marginBottom: '8px', color: 'var(--wood-dark)' }}>
+                  {/* 2. Khung giờ — 09:30 đến 22:00, chia 4 ca */}
+                  <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', marginBottom: '10px', color: 'var(--wood-dark)' }}>
                     2. Chọn khung giờ đến
                   </label>
-                  <div style={{ marginBottom: '6px' }}>
-                    <div style={{ fontSize: '11px', color: 'var(--wood-medium)', marginBottom: '6px', fontWeight: 600 }}>Ca trưa</div>
-                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
-                      {NOON_SLOTS.map(slot => (
-                        <button
-                          key={slot}
-                          onClick={() => setSelectedSlot(slot)}
-                          style={{
-                            padding: '8px 16px', borderRadius: '9999px', border: 'none', cursor: 'pointer',
-                            background: selectedSlot === slot ? 'var(--red-primary)' : 'var(--bg-surface-subtle)',
-                            color: selectedSlot === slot ? '#fff' : 'var(--wood-dark)',
-                            fontWeight: selectedSlot === slot ? 700 : 400,
-                            transition: 'all 0.18s',
-                          }}
-                        >
-                          {slot}
-                        </button>
-                      ))}
-                    </div>
-                    <div style={{ fontSize: '11px', color: 'var(--wood-medium)', marginBottom: '6px', fontWeight: 600 }}>Ca tối</div>
-                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                      {EVENING_SLOTS.map(slot => (
-                        <button
-                          key={slot}
-                          onClick={() => setSelectedSlot(slot)}
-                          style={{
-                            padding: '8px 16px', borderRadius: '9999px', border: 'none', cursor: 'pointer',
-                            background: selectedSlot === slot ? 'var(--red-primary)' : 'var(--bg-surface-subtle)',
-                            color: selectedSlot === slot ? '#fff' : 'var(--wood-dark)',
-                            fontWeight: selectedSlot === slot ? 700 : 400,
-                            transition: 'all 0.18s',
-                          }}
-                        >
-                          {slot}
-                        </button>
-                      ))}
-                    </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '4px' }}>
+                    {SESSION_SLOTS.map(session => (
+                      <div key={session.label}>
+                        <div style={{
+                          fontSize: '11px', fontWeight: 700, color: 'var(--wood-medium)',
+                          textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px',
+                          display: 'flex', alignItems: 'center', gap: '4px'
+                        }}>
+                          {session.emoji} {session.label}
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
+                          {session.slots.map(slot => (
+                            <button
+                              key={slot}
+                              onClick={() => setSelectedSlot(slot)}
+                              style={{
+                                padding: '8px 4px', borderRadius: '10px', border: 'none', cursor: 'pointer',
+                                fontSize: '13px', fontWeight: selectedSlot === slot ? 700 : 500,
+                                background: selectedSlot === slot ? 'var(--red-primary)' : 'var(--bg-surface-subtle)',
+                                color: selectedSlot === slot ? '#fff' : 'var(--wood-dark)',
+                                transition: 'all 0.18s',
+                                boxShadow: selectedSlot === slot ? '0 2px 8px rgba(197,34,31,0.3)' : 'none',
+                              }}
+                            >
+                              {slot}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
