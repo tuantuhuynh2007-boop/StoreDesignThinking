@@ -1,3 +1,4 @@
-﻿push.ps1
-*.bat
-
+push.ps1
+spicy-box-app/node_modules/
+spicy-box-app/dist/
+*.local

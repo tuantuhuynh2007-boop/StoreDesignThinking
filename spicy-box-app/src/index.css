@@ -1,0 +1,261 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-app: #FDFBF7;
+  --bg-surface: #FFFFFF;
+  --bg-surface-subtle: #F6F2EA;
+  --wood-dark: #4A2E1B;
+  --wood-medium: #7A5339;
+  --wood-light: #CBB8A9;
+  --wood-tint: #F3ECE5;
+
+  --red-primary: #C5221F;
+  --red-dark: #981614;
+  --red-light: #FDE8E8;
+
+  --gold-accent: #E5A93C;
+  --gold-light: #FEF7E6;
+  --gold-gradient: linear-gradient(135deg, #F3C669 0%, #E5A93C 100%);
+
+  --status-green: #2E7D32;
+  --status-orange: #ED6C02;
+
+  --radius-pill: 9999px;
+  --radius-card: 22px;
+  --radius-item: 16px;
+  --radius-mascot: 18px;
+
+  --shadow-soft: 0 8px 24px rgba(74, 46, 27, 0.06);
+  --shadow-btn-red: 0 6px 18px rgba(197, 34, 31, 0.28);
+  --shadow-btn-gold: 0 6px 18px rgba(229, 169, 60, 0.32);
+}
+
+body.theme-christmas {
+  --red-primary: #B71C1C;
+  --gold-accent: #D4AF37;
+  --bg-app: #FBFDFB;
+}
+
+body.theme-tet {
+  --red-primary: #D32F2F;
+  --gold-accent: #F59E0B;
+  --bg-app: #FFFDF9;
+}
+
+body.theme-midautumn {
+  --red-primary: #C2410C;
+  --gold-accent: #EAB308;
+  --bg-app: #F8FAFC;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+body {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  background: #231B15;
+  color: var(--wood-dark);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+/* App Mockup Container */
+.device-wrapper {
+  width: 100%;
+  max-width: 414px;
+  height: 852px;
+  background: var(--bg-app);
+  border-radius: 46px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.45), 0 0 0 10px #382B21;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.device-island {
+  width: 120px;
+  height: 28px;
+  background: #000;
+  border-radius: 20px;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
+
+/* Header */
+.top-header {
+  padding: 44px 18px 14px 18px;
+  background: var(--bg-surface);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--wood-tint);
+  z-index: 100;
+}
+.brand-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.brand-icon {
+  width: 38px;
+  height: 38px;
+  background: var(--red-primary);
+  color: #fff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(197, 34, 31, 0.25);
+}
+.brand-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--wood-dark);
+}
+.branch-text {
+  font-size: 11px;
+  color: var(--wood-medium);
+}
+.chili-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--gold-light);
+  border: 1px solid var(--gold-accent);
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--wood-dark);
+}
+
+/* Main Viewport */
+.main-viewport {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px;
+  padding-bottom: 86px;
+}
+.main-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+/* Pills & Buttons */
+.btn-pill {
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: var(--radius-pill);
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.btn-pill:active {
+  transform: scale(0.96);
+}
+.btn-red {
+  background: var(--red-primary);
+  color: #fff;
+  box-shadow: var(--shadow-btn-red);
+}
+.btn-gold {
+  background: var(--gold-gradient);
+  color: var(--wood-dark);
+  box-shadow: var(--shadow-btn-gold);
+}
+
+/* Bottom Nav */
+.bottom-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 72px;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--wood-tint);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: 12px;
+  z-index: 500;
+}
+.nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--wood-light);
+  font-size: 11px;
+  font-weight: 500;
+  width: 58px;
+  transition: all 0.2s;
+}
+.nav-btn.active {
+  color: var(--red-primary);
+  font-weight: 700;
+}
+.nav-btn.active svg {
+  transform: translateY(-2px) scale(1.1);
+}
+
+/* Cards */
+.card-box {
+  background: var(--bg-surface);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--wood-tint);
+  margin-bottom: 16px;
+}
+
+/* Modal */
+.modal-backdrop {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(42, 23, 12, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+  animation: fadeIn 0.2s ease-out;
+}
+.modal-content {
+  background: #fff;
+  border-radius: 28px;
+  padding: 24px;
+  width: 100%;
+  text-align: center;
+  animation: popUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes popUp {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
