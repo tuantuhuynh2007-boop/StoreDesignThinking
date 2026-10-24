@@ -1,7 +1,14 @@
 import { useState } from 'react';
-import { Home, Calendar, Gift, BookOpen, Ticket, CheckCircle, Sparkles, Plus, Minus, ArrowLeft, ShieldCheck, Copy, Loader2 } from 'lucide-react';
+import { Home, Calendar, Gift, BookOpen, Ticket, CheckCircle, Sparkles, Plus, Minus, ArrowLeft, ShieldCheck, Copy, Loader2, LogIn, LogOut, X } from 'lucide-react';
 import type { Season, Mascot } from './types';
 import { INITIAL_MASCOTS } from './data/mascots';
+
+export interface UserProfile {
+  name: string;
+  phone: string;
+  memberCode: string;
+  tier: string;
+}
 
 // ---- Booking helpers ----
 const ADULT_PRICE = 129000;
@@ -50,6 +57,85 @@ export function App() {
   const [activeTab, setActiveTab] = useState<'home' | 'booking' | 'gacha' | 'album' | 'rewards'>('home');
   const [points, setPoints] = useState(120);
   const [servingNum] = useState(18);
+
+  // User Authentication state
+  const [user, setUser] = useState<UserProfile | null>(() => {
+    const saved = localStorage.getItem('spicy_box_user');
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) { /* ignore */ }
+    }
+    // Mặc định ban đầu: Tạo sẵn tài khoản mẫu để trải nghiệm đầy đủ
+    return {
+      name: 'Nguyễn Văn Tuấn',
+      phone: '0908 123 456',
+      memberCode: 'SPB-99812',
+      tier: 'GOLD VIP',
+    };
+  });
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [phoneInput, setPhoneInput] = useState('');
+  const [nameInput, setNameInput] = useState('');
+  const [otpInput, setOtpInput] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [authLoading, setAuthLoading] = useState(false);
+
+  const handleLoginSubmit = () => {
+    if (!phoneInput || phoneInput.length < 9) {
+      alert('Vui lòng nhập số điện thoại hợp lệ (tối thiểu 9 số)!');
+      return;
+    }
+    if (!otpSent) {
+      setAuthLoading(true);
+      setTimeout(() => {
+        setAuthLoading(false);
+        setOtpSent(true);
+      }, 500);
+      return;
+    }
+    if (!otpInput || otpInput.trim() !== '8888') {
+      alert('Mã OTP không chính xác! Hãy nhập mã OTP mẫu: 8888');
+      return;
+    }
+    const loggedUser: UserProfile = {
+      name: nameInput.trim() || `Khách hàng ${phoneInput.slice(-4)}`,
+      phone: phoneInput.trim(),
+      memberCode: `SPB-${Math.floor(10000 + Math.random() * 90000)}`,
+      tier: 'GOLD VIP',
+    };
+    setUser(loggedUser);
+    localStorage.setItem('spicy_box_user', JSON.stringify(loggedUser));
+    setShowAuthModal(false);
+    setOtpSent(false);
+    setPhoneInput('');
+    setNameInput('');
+    setOtpInput('');
+    alert(`Đăng nhập thành công! Chào mừng ${loggedUser.name} đến với Spicy Box.`);
+  };
+
+  const handleQuickDemoLogin = () => {
+    const demoUser: UserProfile = {
+      name: 'Nguyễn Văn Tuấn',
+      phone: '0908 123 456',
+      memberCode: 'SPB-99812',
+      tier: 'GOLD VIP',
+    };
+    setUser(demoUser);
+    localStorage.setItem('spicy_box_user', JSON.stringify(demoUser));
+    setShowAuthModal(false);
+    setOtpSent(false);
+    setPhoneInput('');
+    setNameInput('');
+    setOtpInput('');
+    alert('Đã đăng nhập thành công tài khoản: Nguyễn Văn Tuấn (GOLD VIP)!');
+  };
+
+  const handleLogout = () => {
+    if (confirm('Bạn có chắc chắn muốn đăng xuất tài khoản?')) {
+      setUser(null);
+      localStorage.removeItem('spicy_box_user');
+      alert('Đã đăng xuất tài khoản thành công.');
+    }
+  };
 
   // Booking state — 3 bước: 'form' | 'payment' | 'success'
   const [bookingStep, setBookingStep] = useState<'form' | 'payment' | 'success'>('form');
@@ -132,9 +218,48 @@ export function App() {
             <div className="branch-text">Vincom Thảo Điền ▾</div>
           </div>
         </div>
-        <div className="chili-badge">
-          <span>🌶️</span>
-          <span>{points} Ớt</span>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {user ? (
+            <div
+              onClick={() => setActiveTab('rewards')}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '6px',
+                background: 'var(--bg-surface)', padding: '5px 12px',
+                borderRadius: '9999px', border: '1.5px solid var(--wood-tint)',
+                cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+              }}
+              title="Nhấn để xem thẻ thành viên"
+            >
+              <div style={{
+                width: 22, height: 22, borderRadius: '50%',
+                background: 'linear-gradient(135deg, var(--red-primary), var(--red-dark))', color: '#fff',
+                fontSize: '11px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center'
+              }}>
+                {user.name.charAt(0).toUpperCase()}
+              </div>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--wood-dark)' }}>
+                {user.name.split(' ').pop()}
+              </span>
+              <span style={{ fontSize: '11px', color: 'var(--red-primary)', fontWeight: 700 }}>
+                {points}🌶️
+              </span>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowAuthModal(true)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '6px',
+                background: 'linear-gradient(135deg, var(--red-primary) 0%, #981614 100%)',
+                color: '#fff', border: 'none', padding: '6px 14px', borderRadius: '9999px',
+                fontSize: '12px', fontWeight: 700, cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(197, 34, 31, 0.25)'
+              }}
+            >
+              <LogIn size={14} />
+              <span>Đăng nhập</span>
+            </button>
+          )}
         </div>
       </header>
 
@@ -932,18 +1057,55 @@ export function App() {
         {/* TAB 5: REWARDS */}
         {activeTab === 'rewards' && (
           <div>
-            <div style={{
-              background: 'linear-gradient(135deg, #4A2E1B 0%, #2A170C 100%)',
-              color: '#fff', borderRadius: '22px', padding: '20px', marginBottom: '18px',
-              boxShadow: '0 10px 25px rgba(42, 23, 12, 0.3)'
-            }}>
-              <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--gold-accent)', border: '1px solid var(--gold-accent)', padding: '3px 10px', borderRadius: '9999px' }}>
-                SPICY BOX GOLD VIP
-              </span>
-              <div style={{ fontSize: '12px', opacity: 0.8, marginTop: '12px' }}>SỐ DƯ ĐIỂM:</div>
-              <div style={{ fontSize: '32px', fontWeight: 700 }}>{points} Ớt Vàng 🌶️</div>
-              <div style={{ fontSize: '11px', opacity: 0.8, marginTop: '8px' }}>Mã thành viên: #SPB-99812</div>
-            </div>
+            {user ? (
+              <div style={{
+                background: 'linear-gradient(135deg, #4A2E1B 0%, #2A170C 100%)',
+                color: '#fff', borderRadius: '22px', padding: '20px', marginBottom: '18px',
+                boxShadow: '0 10px 25px rgba(42, 23, 12, 0.3)'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--gold-accent)', border: '1px solid var(--gold-accent)', padding: '3px 10px', borderRadius: '9999px' }}>
+                    SPICY BOX {user.tier}
+                  </span>
+                  <button
+                    onClick={handleLogout}
+                    style={{
+                      background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff',
+                      padding: '4px 10px', borderRadius: '9999px', fontSize: '11px', cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: '4px'
+                    }}
+                  >
+                    <LogOut size={12} /> Đăng xuất
+                  </button>
+                </div>
+                <div style={{ fontSize: '16px', fontWeight: 700, marginTop: '12px' }}>{user.name}</div>
+                <div style={{ fontSize: '12px', opacity: 0.8 }}>SĐT: {user.phone}</div>
+                <div style={{ fontSize: '11px', opacity: 0.7, marginTop: '10px' }}>SỐ DƯ ĐIỂM:</div>
+                <div style={{ fontSize: '32px', fontWeight: 700, color: 'var(--gold-accent)' }}>{points} Ớt Vàng 🌶️</div>
+                <div style={{ fontSize: '11px', opacity: 0.8, marginTop: '6px' }}>Mã thành viên: #{user.memberCode}</div>
+              </div>
+            ) : (
+              <div style={{
+                background: 'linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%)',
+                border: '1.5px dashed #F59E0B', borderRadius: '22px',
+                padding: '24px 18px', textAlign: 'center', marginBottom: '18px'
+              }}>
+                <div style={{ fontSize: '42px', marginBottom: '8px' }}>🌶️</div>
+                <h4 style={{ fontSize: '16px', fontWeight: 700, color: '#B45309', marginBottom: '4px' }}>
+                  Bạn chưa đăng nhập tài khoản
+                </h4>
+                <p style={{ fontSize: '12px', color: '#92400E', marginBottom: '16px', lineHeight: 1.5 }}>
+                  Đăng nhập bằng số điện thoại để tích lũy <strong>Ớt Vàng</strong>, đổi món ngon miễn phí (Phô mai, Bò Mỹ) và nhận thông báo gọi số trực tiếp!
+                </p>
+                <button
+                  className="btn-pill btn-gold"
+                  onClick={() => setShowAuthModal(true)}
+                  style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
+                >
+                  <LogIn size={16} /> Đăng nhập / Đăng ký ngay
+                </button>
+              </div>
+            )}
 
             <div style={{ fontSize: '15px', fontWeight: 700, marginBottom: '12px' }}>Ưu đãi đổi bằng Ớt Vàng</div>
             
@@ -1030,6 +1192,155 @@ export function App() {
             <button className="btn-pill btn-red" onClick={() => { setUnlockedDuck(null); setActiveTab('album'); }}>
               Xem trong Sổ Vịt
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Đăng nhập / Đăng ký tài khoản khách hàng */}
+      {showAuthModal && (
+        <div className="modal-backdrop">
+          <div className="modal-content" style={{ maxWidth: '380px', textAlign: 'left', position: 'relative', padding: '24px 20px' }}>
+            <button
+              onClick={() => { setShowAuthModal(false); setOtpSent(false); }}
+              style={{
+                position: 'absolute', top: 14, right: 14,
+                background: 'var(--bg-surface-subtle)', border: 'none',
+                width: 32, height: 32, borderRadius: '50%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', color: 'var(--wood-dark)'
+              }}
+            >
+              <X size={18} />
+            </button>
+
+            <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+              <div style={{ fontSize: '38px', marginBottom: '4px' }}>🌶️</div>
+              <h3 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--wood-dark)' }}>
+                ĐĂNG NHẬP THÀNH VIÊN
+              </h3>
+              <p style={{ fontSize: '12px', color: 'var(--wood-medium)', marginTop: '2px' }}>
+                Tích Ớt Vàng • Đổi quà Buffet • Săn Vịt Blind Box
+              </p>
+            </div>
+
+            {!otpSent ? (
+              <>
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--wood-dark)', display: 'block', marginBottom: '6px' }}>
+                    Họ và tên của bạn:
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="VD: Nguyễn Văn Tuấn"
+                    value={nameInput}
+                    onChange={e => setNameInput(e.target.value)}
+                    style={{
+                      width: '100%', padding: '10px 14px', borderRadius: '12px',
+                      border: '1.5px solid var(--wood-light)', fontSize: '14px', outline: 'none',
+                      boxSizing: 'border-box'
+                    }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '16px' }}>
+                  <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--wood-dark)', display: 'block', marginBottom: '6px' }}>
+                    Số điện thoại di động:
+                  </label>
+                  <input
+                    type="tel"
+                    placeholder="VD: 0908 123 456"
+                    value={phoneInput}
+                    onChange={e => setPhoneInput(e.target.value)}
+                    style={{
+                      width: '100%', padding: '10px 14px', borderRadius: '12px',
+                      border: '1.5px solid var(--wood-light)', fontSize: '14px', outline: 'none',
+                      boxSizing: 'border-box'
+                    }}
+                  />
+                  <span style={{ fontSize: '11px', color: 'var(--wood-medium)', marginTop: '4px', display: 'block' }}>
+                    Hệ thống sẽ gửi mã OTP xác thực tới số này.
+                  </span>
+                </div>
+
+                <button
+                  className="btn-pill btn-red"
+                  disabled={authLoading}
+                  onClick={handleLoginSubmit}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '12px' }}
+                >
+                  {authLoading ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      <span>Đang gửi mã OTP...</span>
+                    </>
+                  ) : (
+                    <span>Tiếp tục (Nhận mã OTP) ➔</span>
+                  )}
+                </button>
+
+                <div style={{ textAlign: 'center', margin: '10px 0', fontSize: '11px', color: 'var(--wood-medium)' }}>
+                  ── HOẶC ──
+                </div>
+
+                <button
+                  onClick={handleQuickDemoLogin}
+                  style={{
+                    width: '100%', padding: '10px', borderRadius: '9999px',
+                    background: '#FEF3C7', border: '1px solid #F59E0B',
+                    color: '#B45309', fontWeight: 700, fontSize: '12px', cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
+                  }}
+                >
+                  ⚡ Đăng nhập nhanh tài khoản mẫu (Demo)
+                </button>
+              </>
+            ) : (
+              <>
+                <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: '12px', padding: '10px 14px', marginBottom: '14px', fontSize: '12px', color: '#166534' }}>
+                  ✓ Mã OTP gồm 4 chữ số đã gửi tới <strong>{phoneInput}</strong>.
+                  <div style={{ fontSize: '11px', color: '#15803D', marginTop: '3px' }}>
+                    💡 <em>Gợi ý thử nghiệm: Nhập mã OTP mẫu là <strong>8888</strong></em>
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: '16px' }}>
+                  <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--wood-dark)', display: 'block', marginBottom: '6px' }}>
+                    Nhập mã xác thực OTP (4 số):
+                  </label>
+                  <input
+                    type="text"
+                    maxLength={4}
+                    placeholder="8888"
+                    value={otpInput}
+                    onChange={e => setOtpInput(e.target.value)}
+                    style={{
+                      width: '100%', padding: '12px', borderRadius: '12px',
+                      border: '2px solid var(--red-primary)', fontSize: '20px',
+                      textAlign: 'center', letterSpacing: '8px', fontWeight: 700, outline: 'none',
+                      boxSizing: 'border-box'
+                    }}
+                  />
+                </div>
+
+                <button
+                  className="btn-pill btn-red"
+                  onClick={handleLoginSubmit}
+                  style={{ marginBottom: '10px' }}
+                >
+                  Xác nhận đăng nhập & Vào ứng dụng
+                </button>
+
+                <button
+                  onClick={() => setOtpSent(false)}
+                  style={{
+                    background: 'none', border: 'none', color: 'var(--wood-medium)',
+                    fontSize: '12px', cursor: 'pointer', display: 'block', margin: '0 auto'
+                  }}
+                >
+                  ← Đổi số điện thoại khác
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}

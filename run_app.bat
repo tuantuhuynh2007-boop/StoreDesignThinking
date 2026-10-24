@@ -5,4 +5,4 @@ echo ========================================================
 echo    DANG KHOI DONG SPICY BOX SMART WEB APP (DEV SERVER)
 echo ========================================================
 echo.
-npm run dev -- --open
+npm run dev -- --host --open
