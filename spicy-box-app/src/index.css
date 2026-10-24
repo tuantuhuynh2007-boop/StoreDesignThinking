@@ -183,6 +183,11 @@ body {
   color: var(--wood-dark);
   box-shadow: var(--shadow-btn-gold);
 }
+.btn-outline {
+  background: transparent;
+  color: var(--wood-dark);
+  border: 1.5px solid var(--wood-light);
+}
 
 /* Bottom Nav */
 .bottom-bar {

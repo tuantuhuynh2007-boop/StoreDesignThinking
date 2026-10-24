@@ -1,13 +1,41 @@
 import { useState } from 'react';
-import { Home, Calendar, Gift, BookOpen, Ticket, CheckCircle, Sparkles } from 'lucide-react';
+import { Home, Calendar, Gift, BookOpen, Ticket, CheckCircle, Sparkles, Plus, Minus } from 'lucide-react';
 import type { Season, Mascot } from './types';
 import { INITIAL_MASCOTS } from './data/mascots';
+
+// ---- Booking helpers ----
+const today = new Date();
+const DATES = Array.from({ length: 5 }, (_, i) => {
+  const d = new Date(today);
+  d.setDate(today.getDate() + i);
+  return {
+    label: i === 0 ? 'Hôm nay' : i === 1 ? 'Ngày mai' : d.toLocaleDateString('vi-VN', { weekday: 'short' }),
+    day: `${d.getDate()}/${d.getMonth() + 1}`,
+    key: d.toISOString().slice(0, 10),
+  };
+});
+
+const NOON_SLOTS = ['11:30', '12:00', '12:30', '13:00'];
+const EVENING_SLOTS = ['17:30', '18:00', '18:30', '19:00', '19:30'];
+const SPICY_LEVELS = [
+  { key: 'mild', label: '🌶️ Cay nhẹ', desc: 'Hơi tê tê nhẹ' },
+  { key: 'medium', label: '🌶️🌶️ Cay vừa', desc: 'Chuẩn Hàn Quốc' },
+  { key: 'hot', label: '🌶️🌶️🌶️ Cực cay', desc: 'Dành cho chiến binh' },
+];
 
 export function App() {
   const [currentSeason, setCurrentSeason] = useState<Season>('HALLOWEEN');
   const [activeTab, setActiveTab] = useState<'home' | 'booking' | 'gacha' | 'album' | 'rewards'>('home');
   const [points, setPoints] = useState(120);
   const [servingNum] = useState(18);
+
+  // Booking state
+  const [selectedDate, setSelectedDate] = useState(DATES[0].key);
+  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [adultCount, setAdultCount] = useState(2);
+  const [childCount, setChildCount] = useState(0);
+  const [spicyLevel, setSpicyLevel] = useState<string | null>(null);
+  const [bookingDone, setBookingDone] = useState(false);
   const [myNum] = useState(20);
   const [availableBoxes, setAvailableBoxes] = useState(2);
   const [mascots, setMascots] = useState<Mascot[]>(INITIAL_MASCOTS);
@@ -183,36 +211,238 @@ export function App() {
         {activeTab === 'booking' && (
           <div>
             <div style={{ fontSize: '18px', fontWeight: 700, marginBottom: '14px' }}>Đặt bàn trước Spicy Box</div>
-            <div className="card-box">
-              <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', marginBottom: '8px' }}>Chọn ngày ăn lẩu:</label>
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-                <button style={{ padding: '8px 16px', borderRadius: '9999px', background: 'var(--wood-dark)', color: '#fff', border: 'none', fontWeight: 600 }}>Hôm nay (24/10)</button>
-                <button style={{ padding: '8px 16px', borderRadius: '9999px', background: '#fff', border: '1px solid var(--wood-tint)', color: 'var(--wood-medium)' }}>Ngày mai (25/10)</button>
-              </div>
 
-              <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', marginBottom: '8px' }}>Khung giờ đến:</label>
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '16px' }}>
-                <button style={{ padding: '8px 14px', borderRadius: '9999px', background: 'var(--red-primary)', color: '#fff', border: 'none', fontWeight: 600 }}>18:30 (Tối)</button>
-                <button style={{ padding: '8px 14px', borderRadius: '9999px', background: '#fff', border: '1px solid var(--wood-tint)' }}>19:00</button>
-                <button style={{ padding: '8px 14px', borderRadius: '9999px', background: '#fff', border: '1px solid var(--wood-tint)' }}>19:30</button>
+            {bookingDone ? (
+              /* ---- BOOKING SUCCESS SCREEN ---- */
+              <div className="card-box" style={{ textAlign: 'center', padding: '28px 20px' }}>
+                <div style={{ fontSize: '52px', marginBottom: '12px' }}>🎉</div>
+                <h3 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--status-green)', marginBottom: '6px' }}>Đặt bàn thành công!</h3>
+                <p style={{ fontSize: '13px', color: 'var(--wood-medium)', marginBottom: '20px' }}>
+                  Mã đặt chỗ của bạn đã được lưu vào ví.
+                </p>
+                <div style={{ background: 'var(--bg-surface-subtle)', borderRadius: '16px', padding: '16px', marginBottom: '20px', textAlign: 'left' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <span style={{ fontSize: '12px', color: 'var(--wood-medium)' }}>Ngày đặt bàn:</span>
+                    <strong style={{ fontSize: '13px' }}>{DATES.find(d => d.key === selectedDate)?.label} ({DATES.find(d => d.key === selectedDate)?.day})</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <span style={{ fontSize: '12px', color: 'var(--wood-medium)' }}>Khung giờ:</span>
+                    <strong style={{ fontSize: '13px' }}>{selectedSlot}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <span style={{ fontSize: '12px', color: 'var(--wood-medium)' }}>Số khách:</span>
+                    <strong style={{ fontSize: '13px' }}>
+                      {adultCount} người lớn{childCount > 0 ? ` + ${childCount} trẻ em` : ''}
+                    </strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: '12px', color: 'var(--wood-medium)' }}>Vị lẩu:</span>
+                    <strong style={{ fontSize: '13px' }}>{SPICY_LEVELS.find(s => s.key === spicyLevel)?.label ?? '—'}</strong>
+                  </div>
+                </div>
+                {/* QR placeholder */}
+                <div style={{
+                  width: 140, height: 140, margin: '0 auto 20px auto',
+                  background: 'var(--wood-dark)', borderRadius: '16px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: '#fff', fontSize: '48px'
+                }}>
+                  📲
+                </div>
+                <p style={{ fontSize: '12px', color: 'var(--wood-medium)', marginBottom: '16px' }}>
+                  Xuất trình mã QR này khi đến quán để nhân viên dẫn vào bàn.
+                </p>
+                <button className="btn-pill btn-outline" onClick={() => { setBookingDone(false); setSelectedSlot(null); setSpicyLevel(null); }}>
+                  Đặt bàn lần khác
+                </button>
               </div>
+            ) : (
+              /* ---- BOOKING FORM ---- */
+              <>
+                <div className="card-box">
+                  {/* 1. Chọn ngày */}
+                  <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', marginBottom: '8px', color: 'var(--wood-dark)' }}>
+                    1. Chọn ngày ăn lẩu
+                  </label>
+                  <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px', marginBottom: '18px' }}>
+                    {DATES.map(d => (
+                      <button
+                        key={d.key}
+                        onClick={() => setSelectedDate(d.key)}
+                        style={{
+                          flexShrink: 0,
+                          display: 'flex', flexDirection: 'column', alignItems: 'center',
+                          padding: '8px 14px', borderRadius: '14px', border: 'none', cursor: 'pointer',
+                          background: selectedDate === d.key ? 'var(--wood-dark)' : 'var(--bg-surface-subtle)',
+                          color: selectedDate === d.key ? '#fff' : 'var(--wood-medium)',
+                          fontWeight: selectedDate === d.key ? 700 : 400,
+                          transition: 'all 0.18s',
+                        }}
+                      >
+                        <span style={{ fontSize: '11px' }}>{d.label}</span>
+                        <span style={{ fontSize: '15px', fontWeight: 700, marginTop: '2px' }}>{d.day}</span>
+                      </button>
+                    ))}
+                  </div>
 
-              <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', marginBottom: '8px' }}>Số lượng khách:</label>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid var(--wood-tint)' }}>
-                <span>Vé Buffet Người Lớn</span>
-                <strong style={{ fontSize: '16px' }}>4 người</strong>
-              </div>
+                  {/* 2. Khung giờ */}
+                  <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', marginBottom: '8px', color: 'var(--wood-dark)' }}>
+                    2. Chọn khung giờ đến
+                  </label>
+                  <div style={{ marginBottom: '6px' }}>
+                    <div style={{ fontSize: '11px', color: 'var(--wood-medium)', marginBottom: '6px', fontWeight: 600 }}>Ca trưa</div>
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
+                      {NOON_SLOTS.map(slot => (
+                        <button
+                          key={slot}
+                          onClick={() => setSelectedSlot(slot)}
+                          style={{
+                            padding: '8px 16px', borderRadius: '9999px', border: 'none', cursor: 'pointer',
+                            background: selectedSlot === slot ? 'var(--red-primary)' : 'var(--bg-surface-subtle)',
+                            color: selectedSlot === slot ? '#fff' : 'var(--wood-dark)',
+                            fontWeight: selectedSlot === slot ? 700 : 400,
+                            transition: 'all 0.18s',
+                          }}
+                        >
+                          {slot}
+                        </button>
+                      ))}
+                    </div>
+                    <div style={{ fontSize: '11px', color: 'var(--wood-medium)', marginBottom: '6px', fontWeight: 600 }}>Ca tối</div>
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                      {EVENING_SLOTS.map(slot => (
+                        <button
+                          key={slot}
+                          onClick={() => setSelectedSlot(slot)}
+                          style={{
+                            padding: '8px 16px', borderRadius: '9999px', border: 'none', cursor: 'pointer',
+                            background: selectedSlot === slot ? 'var(--red-primary)' : 'var(--bg-surface-subtle)',
+                            color: selectedSlot === slot ? '#fff' : 'var(--wood-dark)',
+                            fontWeight: selectedSlot === slot ? 700 : 400,
+                            transition: 'all 0.18s',
+                          }}
+                        >
+                          {slot}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
 
-              <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', margin: '14px 0 8px 0' }}>Vị sốt lẩu ưu tiên:</label>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <button style={{ padding: '8px 14px', borderRadius: '9999px', background: '#fff', border: '1px solid var(--wood-tint)' }}>🌶️ Cay vừa</button>
-                <button style={{ padding: '8px 14px', borderRadius: '9999px', background: 'var(--wood-dark)', color: '#fff', border: 'none' }}>🌶️🌶️ Chuẩn Hàn</button>
-              </div>
-            </div>
+                <div className="card-box">
+                  {/* 3. Số lượng khách */}
+                  <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', marginBottom: '14px', color: 'var(--wood-dark)' }}>
+                    3. Số lượng vé Buffet
+                  </label>
 
-            <button className="btn-pill btn-red" onClick={() => alert('Đặt bàn thành công! Mã QR của bạn: #SB-8991 đã được lưu vào ví.')}>
-              Xác nhận đặt bàn & Nhận mã QR
-            </button>
+                  {/* Người lớn */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                    <div>
+                      <div style={{ fontSize: '14px', fontWeight: 600 }}>Người lớn</div>
+                      <div style={{ fontSize: '11px', color: 'var(--wood-medium)' }}>Vé Buffet đầy đủ</div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                      <button
+                        onClick={() => setAdultCount(prev => Math.max(1, prev - 1))}
+                        style={{
+                          width: 34, height: 34, borderRadius: '50%', border: '1.5px solid var(--wood-light)',
+                          background: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        }}
+                      >
+                        <Minus size={14} />
+                      </button>
+                      <span style={{ fontSize: '18px', fontWeight: 700, minWidth: '20px', textAlign: 'center' }}>{adultCount}</span>
+                      <button
+                        onClick={() => setAdultCount(prev => Math.min(20, prev + 1))}
+                        style={{
+                          width: 34, height: 34, borderRadius: '50%', border: 'none',
+                          background: 'var(--red-primary)', color: '#fff', cursor: 'pointer',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        }}
+                      >
+                        <Plus size={14} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Trẻ em */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '12px', borderTop: '1px solid var(--wood-tint)' }}>
+                    <div>
+                      <div style={{ fontSize: '14px', fontWeight: 600 }}>Trẻ em</div>
+                      <div style={{ fontSize: '11px', color: 'var(--wood-medium)' }}>Dưới 10 tuổi</div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                      <button
+                        onClick={() => setChildCount(prev => Math.max(0, prev - 1))}
+                        style={{
+                          width: 34, height: 34, borderRadius: '50%', border: '1.5px solid var(--wood-light)',
+                          background: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        }}
+                      >
+                        <Minus size={14} />
+                      </button>
+                      <span style={{ fontSize: '18px', fontWeight: 700, minWidth: '20px', textAlign: 'center' }}>{childCount}</span>
+                      <button
+                        onClick={() => setChildCount(prev => Math.min(10, prev + 1))}
+                        style={{
+                          width: 34, height: 34, borderRadius: '50%', border: 'none',
+                          background: 'var(--red-primary)', color: '#fff', cursor: 'pointer',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        }}
+                      >
+                        <Plus size={14} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="card-box">
+                  {/* 4. Vị cay */}
+                  <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', marginBottom: '12px', color: 'var(--wood-dark)' }}>
+                    4. Vị sốt lẩu ưu tiên
+                  </label>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {SPICY_LEVELS.map(level => (
+                      <button
+                        key={level.key}
+                        onClick={() => setSpicyLevel(level.key)}
+                        style={{
+                          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                          padding: '12px 16px', borderRadius: '14px', border: 'none', cursor: 'pointer',
+                          background: spicyLevel === level.key ? 'var(--red-light)' : 'var(--bg-surface-subtle)',
+                          outline: spicyLevel === level.key ? '2px solid var(--red-primary)' : '2px solid transparent',
+                          transition: 'all 0.18s',
+                          textAlign: 'left',
+                        }}
+                      >
+                        <div>
+                          <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--wood-dark)' }}>{level.label}</div>
+                          <div style={{ fontSize: '11px', color: 'var(--wood-medium)', marginTop: '2px' }}>{level.desc}</div>
+                        </div>
+                        <div style={{
+                          width: 20, height: 20, borderRadius: '50%',
+                          border: `2px solid ${spicyLevel === level.key ? 'var(--red-primary)' : 'var(--wood-light)'}`,
+                          background: spicyLevel === level.key ? 'var(--red-primary)' : 'transparent',
+                          transition: 'all 0.18s',
+                          flexShrink: 0,
+                        }} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <button
+                  className="btn-pill btn-red"
+                  onClick={() => {
+                    if (!selectedSlot) { alert('Vui lòng chọn khung giờ đến!'); return; }
+                    if (!spicyLevel) { alert('Vui lòng chọn vị sốt lẩu!'); return; }
+                    setBookingDone(true);
+                  }}
+                >
+                  Xác nhận đặt bàn & Nhận mã QR
+                </button>
+              </>
+            )}
           </div>
         )}
 
