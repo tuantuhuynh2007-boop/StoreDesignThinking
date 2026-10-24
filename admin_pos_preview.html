@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spicy Box - Staff & Manager POS Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #F8F5F0;
+      --bg-surface: #FFFFFF;
+      --wood-dark: #4A2E1B;
+      --wood-medium: #7A5339;
+      --wood-tint: #EADFD5;
+      --red-primary: #C5221F;
+      --red-dark: #981614;
+      --gold-accent: #E5A93C;
+      --gold-light: #FEF7E6;
+      --status-green: #2E7D32;
+      --status-orange: #ED6C02;
+      --radius-card: 20px;
+      --radius-pill: 9999px;
+      --shadow-soft: 0 6px 20px rgba(74, 46, 27, 0.06);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Be Vietnam Pro', sans-serif; }
+    body { background: var(--bg-page); color: var(--wood-dark); min-height: 100vh; padding: 24px; }
+
+    /* Layout Container */
+    .dashboard-layout { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+
+    /* Top Navigation Header */
+    .dashboard-header {
+      background: var(--bg-surface);
+      border-radius: var(--radius-card);
+      padding: 18px 24px;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid var(--wood-tint);
+    }
+    .brand-area { display: flex; align-items: center; gap: 12px; }
+    .brand-badge {
+      width: 44px; height: 44px; border-radius: 14px;
+      background: var(--red-primary); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; box-shadow: 0 4px 12px rgba(197, 34, 31, 0.3);
+    }
+    .brand-name { font-size: 18px; font-weight: 700; color: var(--wood-dark); }
+    .brand-sub { font-size: 12px; color: var(--wood-medium); }
+
+    .header-actions { display: flex; align-items: center; gap: 14px; }
+    .season-control {
+      background: var(--gold-light);
+      border: 1.5px solid var(--gold-accent);
+      border-radius: var(--radius-pill);
+      padding: 6px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .season-control label { font-size: 12px; font-weight: 600; color: var(--wood-dark); }
+    .season-select {
+      background: transparent; border: none; font-size: 13px; font-weight: 700;
+      color: #92400E; cursor: pointer; outline: none;
+    }
+
+    /* Grid Layout: Left Operational Column, Right Queue Table */
+    .main-grid { display: grid; grid-template-columns: 380px 1fr; gap: 20px; }
+    @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
+
+    /* Left Card: Primary Calling Station */
+    .call-station-card {
+      background: var(--bg-surface);
+      border-radius: var(--radius-card);
+      padding: 24px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--wood-tint);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      text-align: center;
+    }
+    .counter-display {
+      background: #FAF6F0;
+      border-radius: 18px;
+      padding: 20px;
+      border: 1px dashed var(--wood-medium);
+    }
+    .counter-label { font-size: 12px; font-weight: 600; color: var(--wood-medium); letter-spacing: 0.5px; }
+    .counter-number { font-size: 56px; font-weight: 700; color: var(--red-primary); line-height: 1.1; margin: 4px 0; }
+    .counter-party { font-size: 13px; color: var(--wood-dark); }
+
+    /* Big Call Button */
+    .btn-call-next {
+      background: linear-gradient(135deg, #C5221F 0%, #981614 100%);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-pill);
+      padding: 20px 24px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(197, 34, 31, 0.35);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .btn-call-next:active { transform: scale(0.96); }
+
+    .station-secondary-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .btn-secondary {
+      background: #fff; border: 1.5px solid var(--wood-tint);
+      border-radius: var(--radius-pill); padding: 12px;
+      font-size: 13px; font-weight: 600; color: var(--wood-dark);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-secondary:hover { background: #FAF6F0; }
+    .btn-secondary.danger { color: #DC2626; border-color: #FECACA; }
+
+    /* POS Cashier Quick Actions */
+    .pos-quick-card {
+      background: var(--bg-surface);
+      border-radius: var(--radius-card);
+      padding: 20px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--wood-tint);
+    }
+    .card-title { font-size: 15px; font-weight: 700; color: var(--wood-dark); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .pos-input-group { display: flex; gap: 8px; margin-bottom: 10px; }
+    .pos-input {
+      flex: 1; padding: 12px 14px; border-radius: var(--radius-pill);
+      border: 1.5px solid var(--wood-tint); font-size: 14px; outline: none;
+    }
+    .pos-btn {
+      padding: 12px 18px; border-radius: var(--radius-pill);
+      background: var(--gold-accent); color: var(--wood-dark);
+      font-weight: 700; border: none; cursor: pointer;
+    }
+
+    /* Right Table: Live Queue List */
+    .queue-table-card {
+      background: var(--bg-surface);
+      border-radius: var(--radius-card);
+      padding: 24px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--wood-tint);
+    }
+    .table-header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .filter-pills { display: flex; gap: 8px; }
+    .pill-filter {
+      padding: 6px 14px; border-radius: var(--radius-pill);
+      border: 1px solid var(--wood-tint); background: #fff;
+      font-size: 12px; font-weight: 600; color: var(--wood-medium); cursor: pointer;
+    }
+    .pill-filter.active { background: var(--wood-dark); color: #fff; border-color: var(--wood-dark); }
+
+    .queue-table { width: 100%; border-collapse: collapse; }
+    .queue-table th {
+      text-align: left; padding: 12px 14px; font-size: 12px; font-weight: 600;
+      color: var(--wood-medium); border-bottom: 1.5px solid var(--wood-tint);
+    }
+    .queue-table td {
+      padding: 14px; font-size: 13px; color: var(--wood-dark);
+      border-bottom: 1px solid #F4EBE3; vertical-align: middle;
+    }
+    .tag-status {
+      display: inline-block; padding: 4px 10px; border-radius: var(--radius-pill);
+      font-size: 11px; font-weight: 700;
+    }
+    .tag-status.waiting { background: #FEF3C7; color: #B45309; }
+    .tag-status.called { background: #DCFCE7; color: #15803D; animation: blink 1.2s infinite; }
+    @keyframes blink { 50% { opacity: 0.5; } }
+
+    .action-btn-sm {
+      padding: 6px 12px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 600;
+      cursor: pointer; border: none; margin-right: 4px;
+    }
+    .btn-seat { background: #DCFCE7; color: #166534; }
+    .btn-skip { background: #FEE2E2; color: #991B1B; }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="brand-area">
+        <div class="brand-badge">🌶️</div>
+        <div>
+          <div class="brand-name">SPICY BOX • QUẦY ĐÓN KHÁCH & THU NGÂN</div>
+          <div class="brand-sub">Chi nhánh: Vincom Mega Mall Thảo Điền (TP. Thủ Đức)</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- 1-Click Season Switcher -->
+        <div class="season-control">
+          <label>MÙA HIỆN TẠI:</label>
+          <select class="season-select" id="seasonSelect" onchange="switchSeason(this.value)">
+            <option value="HALLOWEEN">🎃 Halloween (Vịt Bí Ngô)</option>
+            <option value="CHRISTMAS">❄️ Giáng Sinh (Vịt Khăn Len)</option>
+            <option value="TET">🧧 Tết Nguyên Đán (Vịt Áo Dài)</option>
+            <option value="MIDAUTUMN">🥮 Trung Thu (Vịt Đèn Lồng)</option>
+          </select>
+        </div>
+        <span style="font-size: 13px; font-weight: 600; color: var(--status-green);">● Hệ thống Live Realtime</span>
+      </div>
+    </header>
+
+    <!-- Main Grid -->
+    <div class="main-grid">
+      <!-- Left Column -->
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <!-- Calling Station -->
+        <div class="call-station-card">
+          <div class="counter-display">
+            <div class="counter-label">SỐ ĐANG GỌI PHỤC VỤ</div>
+            <div class="counter-number" id="currentCallNum">A-18</div>
+            <div class="counter-party">Bàn 4 người • Khách: Trần Anh Tuấn</div>
+          </div>
+
+          <button class="btn-call-next" onclick="callNextNumber()">
+            🔔 GỌI SỐ TIẾP THEO (A-19)
+          </button>
+
+          <div class="station-secondary-actions">
+            <button class="btn-secondary" onclick="alert('Đã gửi thông báo rung lần 2 đến điện thoại khách A-18!')">
+              🔁 Nhắc Lại Lần 2
+            </button>
+            <button class="btn-secondary danger" onclick="markMissed()">
+              ❌ Khách Vắng Mặt
+            </button>
+          </div>
+          <button class="btn-secondary" onclick="toggleQueueStatus(this)">
+            ⏸️ Tạm Dừng Nhận Hàng Chờ
+          </button>
+        </div>
+
+        <!-- POS Cashier Box -->
+        <div class="pos-quick-card">
+          <div class="card-title">🎁 Cấp Lượt Mở Hộp Quà Vịt (Gacha)</div>
+          <div style="font-size: 12px; color: var(--wood-medium); margin-bottom: 8px;">
+            Nhập số bàn sau khi thanh toán hóa đơn:
+          </div>
+          <div class="pos-input-group">
+            <input type="text" class="pos-input" id="tableNum" placeholder="VD: Bàn 04 hoặc HĐ-992">
+            <button class="pos-btn" onclick="grantGacha()">Cấp 1 Lượt</button>
+          </div>
+        </div>
+
+        <!-- Voucher Scanner Simulator -->
+        <div class="pos-quick-card">
+          <div class="card-title">🎟️ Quét Mã Voucher Khách Hàng</div>
+          <div class="pos-input-group">
+            <input type="text" class="pos-input" id="voucherCode" placeholder="Quét mã QR hoặc nhập mã">
+            <button class="pos-btn" style="background: var(--red-primary); color: #fff;" onclick="applyVoucher()">Áp Dụng</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Queue Table -->
+      <div class="queue-table-card">
+        <div class="table-header-area">
+          <div>
+            <h3 style="font-size: 17px; font-weight: 700;">Danh Sách Khách Đang Chờ (05 Khách)</h3>
+            <p style="font-size: 12px; color: var(--wood-medium);">Thời gian chờ trung bình: 12 phút</p>
+          </div>
+          <div class="filter-pills">
+            <button class="pill-filter active">Tất cả (5)</button>
+            <button class="pill-filter">Bàn 1-2 người</button>
+            <button class="pill-filter">Bàn 3-4 người</button>
+            <button class="pill-filter">Bàn lớn 5+</button>
+          </div>
+        </div>
+
+        <table class="queue-table">
+          <thead>
+            <tr>
+              <th>Số</th>
+              <th>Khách Hàng</th>
+              <th>Số Khách</th>
+              <th>Giờ Lấy Số</th>
+              <th>Trạng Thái</th>
+              <th>Thao Tác</th>
+            </tr>
+          </thead>
+          <tbody id="queueBody">
+            <tr style="background: #FDFBF7;">
+              <td><strong style="color: var(--red-primary); font-size: 16px;">A-18</strong></td>
+              <td>Trần Anh Tuấn (***281)</td>
+              <td>4 người</td>
+              <td>16:45 (15p trước)</td>
+              <td><span class="tag-status called">Đang gọi vào</span></td>
+              <td>
+                <button class="action-btn-sm btn-seat" onclick="seatCustomer(this, 'A-18')">✓ Đã Vào Bàn</button>
+                <button class="action-btn-sm btn-skip" onclick="skipCustomer(this, 'A-18')">Bỏ Lượt</button>
+              </td>
+            </tr>
+            <tr>
+              <td><strong style="font-size: 15px;">A-19</strong></td>
+              <td>Nguyễn Thảo My (***092)</td>
+              <td>2 người</td>
+              <td>16:48 (12p trước)</td>
+              <td><span class="tag-status waiting">Kế tiếp</span></td>
+              <td>
+                <button class="action-btn-sm btn-seat" onclick="seatCustomer(this, 'A-19')">✓ Đã Vào Bàn</button>
+              </td>
+            </tr>
+            <tr>
+              <td><strong style="font-size: 15px;">A-20</strong></td>
+              <td>Huỳnh Gia Bảo (***551)</td>
+              <td>4 người</td>
+              <td>16:52 (8p trước)</td>
+              <td><span class="tag-status waiting">Đang chờ</span></td>
+              <td>
+                <button class="action-btn-sm btn-seat" onclick="seatCustomer(this, 'A-20')">✓ Đã Vào Bàn</button>
+              </td>
+            </tr>
+            <tr>
+              <td><strong style="font-size: 15px;">B-04</strong></td>
+              <td>Phạm Hồng Nhung (***443)</td>
+              <td>6 người</td>
+              <td>16:55 (5p trước)</td>
+              <td><span class="tag-status waiting">Đang chờ</span></td>
+              <td>
+                <button class="action-btn-sm btn-seat" onclick="seatCustomer(this, 'B-04')">✓ Đã Vào Bàn</button>
+              </td>
+            </tr>
+            <tr>
+              <td><strong style="font-size: 15px;">A-21</strong></td>
+              <td>Vũ Minh Khang (***892)</td>
+              <td>3 người</td>
+              <td>16:58 (2p trước)</td>
+              <td><span class="tag-status waiting">Đang chờ</span></td>
+              <td>
+                <button class="action-btn-sm btn-seat" onclick="seatCustomer(this, 'A-21')">✓ Đã Vào Bàn</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentNumber = 18;
+
+    function callNextNumber() {
+      currentNumber++;
+      document.getElementById('currentCallNum').innerText = 'A-' + currentNumber;
+      alert(`Đã kích hoạt gọi số A-${currentNumber}! Chuông báo và tín hiệu rung đã gửi đến điện thoại của khách hàng.`);
+    }
+
+    function markMissed() {
+      alert(`Đã đánh dấu số A-${currentNumber} vắng mặt. Chỗ được giữ thêm 10 phút trước khi hủy.`);
+    }
+
+    function toggleQueueStatus(btn) {
+      if (btn.innerText.includes('Tạm Dừng')) {
+        btn.innerText = '▶️ Tiếp Tục Mở Hàng Chờ';
+        btn.style.color = '#15803D';
+        alert('Đã TẠM NGƯNG nhận thêm hàng chờ. Khách quét mã QR tại cửa sẽ thấy thông báo kín bàn.');
+      } else {
+        btn.innerText = '⏸️ Tạm Dừng Nhận Hàng Chờ';
+        btn.style.color = '';
+        alert('Đã MỞ LẠI tiếp nhận hàng chờ.');
+      }
+    }
+
+    function seatCustomer(btn, code) {
+      const row = btn.closest('tr');
+      row.style.opacity = '0.4';
+      row.style.background = '#F0FDF4';
+      btn.innerText = 'Đã ngồi bàn';
+      btn.disabled = true;
+      alert(`Khách số ${code} đã vào bàn ăn lẩu thành công!`);
+    }
+
+    function skipCustomer(btn, code) {
+      const row = btn.closest('tr');
+      row.style.display = 'none';
+      alert(`Đã xóa số ${code} khỏi hàng chờ.`);
+    }
+
+    function grantGacha() {
+      const val = document.getElementById('tableNum').value;
+      if (!val) { alert('Vui lòng nhập số bàn hoặc mã hóa đơn!'); return; }
+      alert(`Đã cấp thành công 01 LƯỢT MỞ HỘP QUÀ VỊT VÀNG cho ${val}! Khách mở app lên là thấy hộp quà ngay.`);
+      document.getElementById('tableNum').value = '';
+    }
+
+    function applyVoucher() {
+      const code = document.getElementById('voucherCode').value;
+      if (!code) { alert('Vui lòng quét hoặc nhập mã voucher!'); return; }
+      alert(`Voucher hợp lệ! Giảm ngay 50.000đ vào hóa đơn bàn.`);
+      document.getElementById('voucherCode').value = '';
+    }
+
+    function switchSeason(season) {
+      alert(`Đã chuyển toàn bộ hệ thống Spicy Box sang: [ MÙA ${season} ]! Tất cả điện thoại của khách hàng đã đổi giao diện và kho quà Vịt.`);
+    }
+  </script>
+</body>
+</html>
