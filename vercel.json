@@ -1,0 +1,6 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "cd spicy-box-app && npm install",
+  "buildCommand": "cd spicy-box-app && npm run build",
+  "outputDirectory": "spicy-box-app/dist"
+}
