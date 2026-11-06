@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Home, Calendar, Gift, BookOpen, Ticket, CheckCircle, Sparkles, Plus, Minus, ArrowLeft, ShieldCheck, Copy, Loader2, LogIn, LogOut, X } from 'lucide-react';
 import type { Season, Mascot } from './types';
 import { INITIAL_MASCOTS } from './data/mascots';
@@ -78,6 +78,25 @@ export function App() {
   const [otpInput, setOtpInput] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
+
+  // Auto-login via QR code scan (?autologin=true hoặc ?name=...&phone=...)
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('autologin') === 'true' || params.has('guest') || params.has('qr')) {
+        const qrUser: UserProfile = {
+          name: params.get('name') || 'Khách Quét QR',
+          phone: params.get('phone') || '0988 888 888',
+          memberCode: `SPB-${Math.floor(10000 + Math.random() * 90000)}`,
+          tier: 'GOLD VIP',
+        };
+        setUser(qrUser);
+        localStorage.setItem('spicy_box_user', JSON.stringify(qrUser));
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, []);
 
   const handleLoginSubmit = () => {
     if (!phoneInput || phoneInput.length < 9) {
