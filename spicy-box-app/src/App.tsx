@@ -231,9 +231,12 @@ export function App() {
       {/* Header */}
       <header className="top-header">
         <div className="brand-box">
-          <div className="brand-icon">🌶️</div>
+          <img
+            src="./assets/spicy-box-logo.png"
+            alt="Spicy Box Logo"
+            style={{ height: '42px', objectFit: 'contain' }}
+          />
           <div>
-            <div className="brand-name">SPICY BOX</div>
             <div className="branch-text">Vincom Thảo Điền ▾</div>
           </div>
         </div>
@@ -772,7 +775,7 @@ export function App() {
                       position: 'relative', overflow: 'hidden'
                     }}>
                       <div style={{ fontSize: '38px' }}>📲</div>
-                      <div style={{ fontSize: '8px', color: '#FCD34D', fontWeight: 700 }}>SPICY BOX PAY</div>
+                      <img src="./assets/spicy-box-logo.png" alt="Spicy Box Pay" style={{ height: '16px', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
                     </div>
                     <div style={{ fontSize: '9px', color: 'var(--wood-medium)', marginTop: '4px' }}>
                       Mở app quét mã để thanh toán
@@ -982,7 +985,7 @@ export function App() {
             >
               <div style={{ position: 'absolute', width: '100%', height: 24, background: 'var(--gold-gradient)' }}></div>
               <div style={{ fontSize: '44px', zIndex: 2 }}>🎀</div>
-              <div style={{ color: '#fff', fontSize: '12px', fontWeight: 700, letterSpacing: '1px', marginTop: '10px', zIndex: 2 }}>SPICY BOX</div>
+              <img src="./assets/spicy-box-logo.png" alt="Spicy Box" style={{ height: '28px', objectFit: 'contain', zIndex: 2, marginTop: '8px', filter: 'brightness(0) invert(1)' }} />
             </div>
 
             <p style={{ fontSize: '13px', color: 'var(--wood-medium)', margin: '16px 0' }}>
@@ -1233,7 +1236,7 @@ export function App() {
             </button>
 
             <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-              <div style={{ fontSize: '38px', marginBottom: '4px' }}>🌶️</div>
+              <img src="./assets/spicy-box-logo.png" alt="Spicy Box" style={{ height: '52px', objectFit: 'contain', marginBottom: '4px' }} />
               <h3 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--wood-dark)' }}>
                 ĐĂNG NHẬP THÀNH VIÊN
               </h3>
