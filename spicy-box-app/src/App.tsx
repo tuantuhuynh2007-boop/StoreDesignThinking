@@ -106,9 +106,14 @@ export function App() {
     if (saved) {
       try { return JSON.parse(saved); } catch (e) { /* ignore */ }
     }
-    return null;
+    // Mặc định ban đầu: Tạo sẵn tài khoản mẫu để trải nghiệm đầy đủ
+    return {
+      name: 'Nguyễn Văn Tuấn',
+      phone: '0908 123 456',
+      memberCode: 'SPB-99812',
+      tier: 'GOLD VIP',
+    };
   });
-  const [isGuest, setIsGuest] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [phoneInput, setPhoneInput] = useState('');
   const [nameInput, setNameInput] = useState('');
@@ -188,7 +193,6 @@ export function App() {
   const handleLogout = () => {
     if (confirm('Bạn có chắc chắn muốn đăng xuất tài khoản?')) {
       setUser(null);
-      setIsGuest(false);
       localStorage.removeItem('spicy_box_user');
       alert('Đã đăng xuất tài khoản thành công.');
     }
@@ -287,205 +291,6 @@ export function App() {
       {/* Top Island */}
       <div className="device-island"></div>
 
-      {/* MÀN HÌNH CHÀO MỪNG & ĐĂNG NHẬP (HIỂN THỊ KHI CHƯA ĐĂNG NHẬP & CHƯA CHỌN KHÁCH VÃNG LAI) */}
-      {!user && !isGuest ? (
-        <div style={{
-          minHeight: '750px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          padding: '30px 22px 24px 22px',
-          background: 'linear-gradient(180deg, #FFFFFF 0%, #FFF7ED 100%)',
-          textAlign: 'center',
-          boxSizing: 'border-box'
-        }}>
-          {/* Logo & Slogan Header */}
-          <div>
-            <div style={{
-              width: 90, height: 90, margin: '10px auto 14px auto',
-              background: '#fff', borderRadius: '24px',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 12px 30px rgba(197, 34, 31, 0.15)',
-              border: '1px solid rgba(197, 34, 31, 0.1)',
-              padding: '10px'
-            }}>
-              <img
-                src="./assets/spicy-box-logo.png"
-                alt="Spicy Box"
-                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-              />
-            </div>
-            <h2 style={{ fontSize: '22px', fontWeight: 800, color: 'var(--wood-dark)', letterSpacing: '0.5px', marginBottom: '4px' }}>
-              SPICY BOX VIỆT NAM
-            </h2>
-            <p style={{ fontSize: '13px', color: 'var(--red-primary)', fontWeight: 600 }}>
-              Buffet Lẩu Tokbokki Tự Phục Vụ • Do It Yourself
-            </p>
-
-            {/* Thẻ đặc quyền thành viên */}
-            <div style={{
-              background: 'linear-gradient(135deg, #FEF2F2 0%, #FFF1F2 100%)',
-              border: '1px solid #FECDD3',
-              borderRadius: '16px',
-              padding: '12px 14px',
-              margin: '18px 0 20px 0',
-              textAlign: 'left'
-            }}>
-              <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--red-primary)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                <Sparkles size={14} /> ĐẶC QUYỀN THÀNH VIÊN KHI ĐĂNG NHẬP:
-              </div>
-              <div style={{ fontSize: '11px', color: '#881337', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <div>🌶️ <strong>Tích điểm Ớt Vàng</strong> đổi vé buffet & topping miễn phí</div>
-                <div>🎁 <strong>Mở hộp mù Blind Box</strong> sưu tầm Vịt Độc Bản theo mùa</div>
-                <div>⚡ <strong>Đặt bàn ưu tiên</strong> – Quét QR check-in không chờ đợi</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Form đăng nhập SĐT hoặc OTP */}
-          <div style={{
-            background: '#fff',
-            borderRadius: '20px',
-            padding: '20px 18px',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.06)',
-            border: '1px solid var(--wood-tint)',
-            textAlign: 'left'
-          }}>
-            {!otpSent ? (
-              <>
-                <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--wood-dark)', display: 'block', marginBottom: '6px' }}>
-                  📱 Số điện thoại của bạn:
-                </label>
-                <input
-                  type="tel"
-                  placeholder="VD: 0908 123 456"
-                  value={phoneInput}
-                  onChange={e => setPhoneInput(e.target.value)}
-                  style={{
-                    width: '100%', padding: '11px 14px', borderRadius: '12px',
-                    border: '1.5px solid var(--wood-light)', fontSize: '14px', outline: 'none',
-                    boxSizing: 'border-box', marginBottom: '10px'
-                  }}
-                />
-
-                <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--wood-dark)', display: 'block', marginBottom: '6px' }}>
-                  👤 Họ và tên (không bắt buộc):
-                </label>
-                <input
-                  type="text"
-                  placeholder="VD: Tuấn Nguyễn"
-                  value={nameInput}
-                  onChange={e => setNameInput(e.target.value)}
-                  style={{
-                    width: '100%', padding: '11px 14px', borderRadius: '12px',
-                    border: '1.5px solid var(--wood-light)', fontSize: '14px', outline: 'none',
-                    boxSizing: 'border-box', marginBottom: '14px'
-                  }}
-                />
-
-                <button
-                  className="btn-pill btn-red"
-                  disabled={authLoading}
-                  onClick={handleLoginSubmit}
-                  style={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                    width: '100%', padding: '13px', fontSize: '14px', fontWeight: 700
-                  }}
-                >
-                  {authLoading ? (
-                    <>
-                      <Loader2 size={16} className="animate-spin" />
-                      <span>Đang gửi mã xác thực...</span>
-                    </>
-                  ) : (
-                    <span>Tiếp tục (Nhận mã OTP) ➔</span>
-                  )}
-                </button>
-              </>
-            ) : (
-              <>
-                <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: '12px', padding: '10px 14px', marginBottom: '14px', fontSize: '12px', color: '#166534' }}>
-                  ✓ Mã OTP gồm 4 số đã gửi tới <strong>{phoneInput}</strong>.
-                  <div style={{ fontSize: '11px', color: '#15803D', marginTop: '2px' }}>
-                    💡 <em>Gợi ý thử nghiệm: Nhập mã OTP mẫu là <strong>8888</strong></em>
-                  </div>
-                </div>
-
-                <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--wood-dark)', display: 'block', marginBottom: '6px' }}>
-                  Nhập mã OTP (4 số):
-                </label>
-                <input
-                  type="text"
-                  maxLength={4}
-                  placeholder="8888"
-                  value={otpInput}
-                  onChange={e => setOtpInput(e.target.value)}
-                  style={{
-                    width: '100%', padding: '12px', borderRadius: '12px',
-                    border: '2px solid var(--red-primary)', fontSize: '20px',
-                    textAlign: 'center', letterSpacing: '8px', fontWeight: 700, outline: 'none',
-                    boxSizing: 'border-box', marginBottom: '12px'
-                  }}
-                />
-
-                <button
-                  className="btn-pill btn-red"
-                  onClick={handleLoginSubmit}
-                  style={{ width: '100%', padding: '13px', fontSize: '14px', fontWeight: 700, marginBottom: '8px' }}
-                >
-                  Xác nhận đăng nhập & Vào ứng dụng
-                </button>
-
-                <button
-                  onClick={() => setOtpSent(false)}
-                  style={{
-                    background: 'none', border: 'none', color: 'var(--wood-medium)',
-                    fontSize: '12px', cursor: 'pointer', display: 'block', margin: '4px auto 0 auto'
-                  }}
-                >
-                  ← Đổi số điện thoại khác
-                </button>
-              </>
-            )}
-
-            <div style={{ textAlign: 'center', margin: '14px 0 12px 0', fontSize: '11px', color: 'var(--wood-medium)' }}>
-              ── HOẶC TRẢI NGHIỆM NHANH ──
-            </div>
-
-            {/* Nút 1 chạm đăng nhập tài khoản mẫu */}
-            <button
-              onClick={handleQuickDemoLogin}
-              style={{
-                width: '100%', padding: '11px', borderRadius: '12px',
-                background: '#FEF3C7', border: '1px solid #F59E0B',
-                color: '#B45309', fontWeight: 700, fontSize: '13px', cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
-              }}
-            >
-              ⚡ Đăng nhập 1 chạm (Tài khoản mẫu VIP)
-            </button>
-          </div>
-
-          {/* Khách vãng lai & Footer */}
-          <div style={{ marginTop: '16px' }}>
-            <button
-              onClick={() => setIsGuest(true)}
-              style={{
-                background: 'none', border: 'none',
-                color: 'var(--wood-medium)', fontSize: '13px', fontWeight: 600,
-                cursor: 'pointer', textDecoration: 'underline'
-              }}
-            >
-              🚶 Khách vãng lai: Tiếp tục xem bàn & menu ➔
-            </button>
-
-            <div style={{ fontSize: '10px', color: 'var(--wood-medium)', marginTop: '10px' }}>
-              Hệ sinh thái Spicy Box Việt Nam • 20 chi nhánh toàn quốc
-            </div>
-          </div>
-        </div>
-      ) : (
-        <>
       {/* Header */}
       <header className="top-header">
         <div className="brand-box">
@@ -1899,8 +1704,6 @@ export function App() {
             </div>
           </div>
         </div>
-      )}
-        </>
       )}
     </div>
   );
