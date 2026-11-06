@@ -1,7 +1,27 @@
 import { useState, useEffect } from 'react';
-import { Home, Calendar, Gift, BookOpen, Ticket, CheckCircle, Sparkles, Plus, Minus, ArrowLeft, ShieldCheck, Copy, Loader2, LogIn, LogOut, X } from 'lucide-react';
+import { Home, Calendar, Gift, BookOpen, Ticket, CheckCircle, Sparkles, Plus, Minus, ArrowLeft, ShieldCheck, Copy, Loader2, LogIn, LogOut, X, MapPin, ChevronDown } from 'lucide-react';
 import type { Season, Mascot } from './types';
 import { INITIAL_MASCOTS } from './data/mascots';
+
+export interface Branch {
+  id: string;
+  name: string;
+  mall: string;
+  address: string;
+  district: string;
+  hotline: string;
+}
+
+export const BRANCHES: Branch[] = [
+  { id: 'thaodien', name: 'Spicy Box Vincom Thảo Điền', mall: 'Tầng 4, Vincom Mega Mall Thảo Điền', address: '161 Xa Lộ Hà Nội, P. Thảo Điền', district: 'TP. Thủ Đức', hotline: '028 3620 9099' },
+  { id: 'saigoncentre', name: 'Spicy Box Saigon Centre', mall: 'Tầng B2, Saigon Centre', address: '65 Lê Lợi, P. Bến Nghé', district: 'Quận 1', hotline: '028 3821 1122' },
+  { id: 'vanhanh', name: 'Spicy Box Vạn Hạnh Mall', mall: 'Tầng B, Vạn Hạnh Mall', address: '11 Sư Vạn Hạnh, Phường 12', district: 'Quận 10', hotline: '028 3862 8899' },
+  { id: 'gigamall', name: 'Spicy Box Gigamall', mall: 'Tầng 5, TTTM Gigamall', address: '240-242 Phạm Văn Đồng, P. Hiệp Bình Chánh', district: 'TP. Thủ Đức', hotline: '028 3636 5588' },
+  { id: 'crescent', name: 'Spicy Box Crescent Mall', mall: 'Tầng 5, Crescent Mall', address: '101 Tôn Dật Tiên, P. Tân Phú', district: 'Quận 7', hotline: '028 5413 7799' },
+  { id: 'estella', name: 'Spicy Box Estella Place', mall: 'Tầng 4, Estella Place', address: '88 Song Hành, P. An Phú', district: 'TP. Thủ Đức', hotline: '028 3636 3311' },
+  { id: 'gonguyenthithap', name: 'Spicy Box GO! Nguyễn Thị Thập', mall: 'Tầng 2, GO! Nguyễn Thị Thập', address: '99 Nguyễn Thị Thập, P. Tân Phú', district: 'Quận 7', hotline: '028 3775 6677' },
+  { id: 'parcmall', name: 'Spicy Box Parcmall', mall: 'Tầng 4, TTTM Parcmall', address: '547 Tạ Quang Bửu, Phường 4', district: 'Quận 8', hotline: '028 3850 4488' },
+];
 
 export interface UserProfile {
   name: string;
@@ -156,6 +176,25 @@ export function App() {
     }
   };
 
+  // Branch state
+  const [selectedBranch, setSelectedBranch] = useState<Branch>(() => {
+    const saved = localStorage.getItem('spicy_box_branch');
+    if (saved) {
+      try {
+        const found = BRANCHES.find(b => b.id === saved);
+        if (found) return found;
+      } catch (e) { /* ignore */ }
+    }
+    return BRANCHES[0];
+  });
+  const [showBranchModal, setShowBranchModal] = useState(false);
+
+  const handleSelectBranch = (branch: Branch) => {
+    setSelectedBranch(branch);
+    localStorage.setItem('spicy_box_branch', branch.id);
+    setShowBranchModal(false);
+  };
+
   // Booking state — 3 bước: 'form' | 'payment' | 'success'
   const [bookingStep, setBookingStep] = useState<'form' | 'payment' | 'success'>('form');
   const [selectedDate, setSelectedDate] = useState(DATES[0].key);
@@ -236,9 +275,20 @@ export function App() {
             alt="Spicy Box Logo"
             style={{ height: '42px', objectFit: 'contain' }}
           />
-          <div>
-            <div className="branch-text">Vincom Thảo Điền ▾</div>
-          </div>
+          <button
+            onClick={() => setShowBranchModal(true)}
+            style={{
+              background: 'none', border: 'none', padding: 0, textAlign: 'left',
+              cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '3px'
+            }}
+            title="Nhấn để đổi chi nhánh ăn lẩu"
+          >
+            <div className="branch-text" style={{ fontWeight: 600, color: 'var(--wood-dark)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <MapPin size={12} color="var(--red-primary)" />
+              <span>{selectedBranch.name.replace('Spicy Box ', '')}</span>
+              <ChevronDown size={13} color="var(--wood-medium)" />
+            </div>
+          </button>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -313,7 +363,7 @@ export function App() {
 
             {/* Live Queue Card */}
             <div className="card-box" style={{ borderTop: '6px solid var(--red-primary)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                 <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--wood-medium)', textTransform: 'uppercase' }}>
                   Hàng chờ trực tiếp
                 </span>
@@ -321,6 +371,21 @@ export function App() {
                   <span style={{ width: 8, height: 8, background: 'var(--status-green)', borderRadius: '50%' }}></span>
                   Đang hoạt động
                 </span>
+              </div>
+
+              {/* Chi nhánh hiện tại */}
+              <div
+                onClick={() => setShowBranchModal(true)}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '5px',
+                  background: 'var(--bg-surface-subtle)', padding: '4px 10px', borderRadius: '8px',
+                  fontSize: '11px', color: 'var(--wood-dark)', fontWeight: 600, marginBottom: '10px',
+                  cursor: 'pointer', border: '1px solid var(--wood-tint)'
+                }}
+              >
+                <MapPin size={12} color="var(--red-primary)" />
+                <span>{selectedBranch.name}</span>
+                <span style={{ color: 'var(--red-primary)', fontSize: '10px' }}>(Đổi)</span>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', padding: '10px 0 16px 0', borderBottom: '1px dashed var(--wood-light)' }}>
@@ -440,9 +505,49 @@ export function App() {
             {/* BƯỚC 1: FORM CHỌN BÀN & VÉ */}
             {bookingStep === 'form' && (
               <>
-                <div style={{ fontSize: '17px', fontWeight: 700, marginBottom: '12px' }}>Bước 1: Chọn ngày, giờ & số vé</div>
+                <div style={{ fontSize: '17px', fontWeight: 700, marginBottom: '12px' }}>Bước 1: Chọn chi nhánh, ngày, giờ & số vé</div>
 
                 <div className="card-box">
+                  {/* 0. Chọn chi nhánh */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <label style={{ fontSize: '13px', fontWeight: 600, color: 'var(--wood-dark)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <MapPin size={14} color="var(--red-primary)" /> Chi nhánh Spicy Box
+                    </label>
+                    <button
+                      onClick={() => setShowBranchModal(true)}
+                      style={{
+                        background: 'none', border: 'none', color: 'var(--red-primary)',
+                        fontSize: '12px', fontWeight: 700, cursor: 'pointer', padding: 0
+                      }}
+                    >
+                      Đổi chi nhánh ➔
+                    </button>
+                  </div>
+                  <div
+                    onClick={() => setShowBranchModal(true)}
+                    style={{
+                      padding: '10px 12px', borderRadius: '12px',
+                      background: 'var(--bg-surface-subtle)', border: '1.5px solid var(--wood-tint)',
+                      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                      cursor: 'pointer', marginBottom: '18px'
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--wood-dark)' }}>
+                        {selectedBranch.name}
+                      </div>
+                      <div style={{ fontSize: '11px', color: 'var(--wood-medium)', marginTop: '2px' }}>
+                        {selectedBranch.mall} • {selectedBranch.district}
+                      </div>
+                    </div>
+                    <div style={{
+                      fontSize: '11px', background: '#FEE2E2', color: 'var(--red-primary)',
+                      padding: '4px 8px', borderRadius: '8px', fontWeight: 700, flexShrink: 0
+                    }}>
+                      Thay đổi
+                    </div>
+                  </div>
+
                   {/* 1. Chọn ngày */}
                   <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', marginBottom: '8px', color: 'var(--wood-dark)' }}>
                     1. Chọn ngày ăn lẩu
@@ -669,11 +774,17 @@ export function App() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                     <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--wood-dark)' }}>Thông tin bàn đặt</span>
                     <span style={{ fontSize: '11px', color: '#047857', background: '#D1FAE5', padding: '2px 8px', borderRadius: '99px', fontWeight: 600 }}>
-                      Vincom Thảo Điền
+                      {selectedBranch.name.replace('Spicy Box ', '')}
                     </span>
                   </div>
 
                   <div style={{ fontSize: '12px', color: 'var(--wood-medium)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span>Chi nhánh:</span>
+                      <strong style={{ color: 'var(--wood-dark)', textAlign: 'right', maxWidth: '60%' }}>
+                        {selectedBranch.name} ({selectedBranch.mall})
+                      </strong>
+                    </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <span>Thời gian ăn lẩu:</span>
                       <strong style={{ color: 'var(--wood-dark)' }}>
@@ -886,7 +997,15 @@ export function App() {
                 <div style={{ background: 'var(--bg-surface-subtle)', borderRadius: '16px', padding: '14px', marginBottom: '16px', textAlign: 'left', fontSize: '12px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
                     <span style={{ color: 'var(--wood-medium)' }}>Chi nhánh:</span>
-                    <strong style={{ color: 'var(--wood-dark)' }}>Spicy Box Vincom Thảo Điền</strong>
+                    <strong style={{ color: 'var(--wood-dark)', textAlign: 'right', maxWidth: '60%' }}>
+                      {selectedBranch.name} ({selectedBranch.mall})
+                    </strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                    <span style={{ color: 'var(--wood-medium)' }}>Địa chỉ:</span>
+                    <span style={{ color: 'var(--wood-dark)', textAlign: 'right', maxWidth: '60%', fontSize: '11px' }}>
+                      {selectedBranch.address}, {selectedBranch.district}
+                    </span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
                     <span style={{ color: 'var(--wood-medium)' }}>Thời gian:</span>
@@ -1363,6 +1482,89 @@ export function App() {
                 </button>
               </>
             )}
+          </div>
+        </div>
+      )}
+      {/* Modal Chọn chi nhánh Spicy Box */}
+      {showBranchModal && (
+        <div className="modal-backdrop">
+          <div className="modal-content" style={{ maxWidth: '400px', textAlign: 'left', position: 'relative', padding: '22px 18px', maxHeight: '85vh', display: 'flex', flexDirection: 'column' }}>
+            <button
+              onClick={() => setShowBranchModal(false)}
+              style={{
+                position: 'absolute', top: 14, right: 14,
+                background: 'var(--wood-light)', border: 'none',
+                width: 30, height: 30, borderRadius: '50%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', color: 'var(--wood-dark)', zIndex: 10
+              }}
+            >
+              <X size={16} />
+            </button>
+
+            <div style={{ marginBottom: '14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <MapPin size={20} color="var(--red-primary)" />
+                <h3 style={{ fontSize: '17px', fontWeight: 700, color: 'var(--wood-dark)' }}>
+                  Chọn chi nhánh Spicy Box
+                </h3>
+              </div>
+              <p style={{ fontSize: '12px', color: 'var(--wood-medium)', marginTop: '4px' }}>
+                Chọn nhà hàng gần bạn nhất để xem số chờ và đặt bàn
+              </p>
+            </div>
+
+            {/* Danh sách các chi nhánh */}
+            <div style={{ overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', paddingRight: '4px' }}>
+              {BRANCHES.map(b => {
+                const isSelected = selectedBranch.id === b.id;
+                return (
+                  <div
+                    key={b.id}
+                    onClick={() => handleSelectBranch(b)}
+                    style={{
+                      padding: '12px 14px',
+                      borderRadius: '14px',
+                      border: isSelected ? '2px solid var(--red-primary)' : '1.5px solid var(--wood-tint)',
+                      background: isSelected ? '#FEF2F2' : 'var(--bg-surface)',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <div style={{ flex: 1, paddingRight: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span style={{ fontSize: '14px', fontWeight: 700, color: isSelected ? 'var(--red-primary)' : 'var(--wood-dark)' }}>
+                          {b.name}
+                        </span>
+                        {isSelected && (
+                          <span style={{ fontSize: '10px', background: 'var(--red-primary)', color: '#fff', padding: '1px 6px', borderRadius: '6px', fontWeight: 700 }}>
+                            Đang chọn
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: '11px', color: 'var(--wood-dark)', marginTop: '3px', fontWeight: 500 }}>
+                        📍 {b.mall}
+                      </div>
+                      <div style={{ fontSize: '11px', color: 'var(--wood-medium)', marginTop: '2px' }}>
+                        {b.address}, {b.district}
+                      </div>
+                      <div style={{ fontSize: '10px', color: '#047857', marginTop: '3px', fontWeight: 600 }}>
+                        📞 {b.hotline} • ⏰ 09:30 - 22:00
+                      </div>
+                    </div>
+
+                    <div style={{
+                      width: 20, height: 20, borderRadius: '50%',
+                      border: isSelected ? '6px solid var(--red-primary)' : '2px solid var(--wood-medium)',
+                      background: '#fff', flexShrink: 0
+                    }} />
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}
