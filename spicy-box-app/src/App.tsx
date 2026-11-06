@@ -21,8 +21,14 @@ export function App() {
   const [currentSeason, setCurrentSeason] = useState<Season>('HALLOWEEN');
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
   const [points, setPoints] = useState(120);
-  const [servingNum] = useState(18);
-  const [myNum] = useState(20);
+
+  // Hàng chờ: Khi vừa tạo tài khoản / chưa đặt bàn thì số của bạn là null, cửa hàng có thể chưa phục vụ hoặc đang phục vụ lượt A-12
+  const [servingNum, setServingNum] = useState<number | null>(12);
+  const [myNum, setMyNum] = useState<number | null>(() => {
+    const saved = localStorage.getItem('spicy_box_my_queue');
+    return saved ? parseInt(saved, 10) : null;
+  });
+
   const [availableBoxes, setAvailableBoxes] = useState(2);
   const [mascots, setMascots] = useState<Mascot[]>(INITIAL_MASCOTS);
   const [unlockedDuck, setUnlockedDuck] = useState<Mascot | null>(null);
@@ -42,8 +48,8 @@ export function App() {
   const [isGuest, setIsGuest] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
-  // Branch state
-  const [selectedBranch, setSelectedBranch] = useState<Branch>(() => {
+  // Branch state: mặc định không khóa vào Vincom Thảo Điền nếu chưa từng chọn
+  const [selectedBranch, setSelectedBranch] = useState<Branch | null>(() => {
     const saved = localStorage.getItem('spicy_box_branch');
     if (saved) {
       try {
@@ -53,9 +59,19 @@ export function App() {
         /* ignore */
       }
     }
-    return BRANCHES[0];
+    return null;
   });
   const [showBranchModal, setShowBranchModal] = useState(false);
+
+  // Tự động nhắc chọn chi nhánh khi đăng nhập hoặc vào app lần đầu mà chưa có chi nhánh
+  useEffect(() => {
+    if ((user || isGuest) && !selectedBranch) {
+      const timer = setTimeout(() => {
+        setShowBranchModal(true);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [user, isGuest, selectedBranch]);
 
   // Auto-login via QR code scan (?autologin=true hoặc ?name=...&phone=...)
   useEffect(() => {
@@ -82,6 +98,8 @@ export function App() {
     setSelectedBranch(branch);
     localStorage.setItem('spicy_box_branch', branch.id);
     setShowBranchModal(false);
+    // Khi đổi chi nhánh thì reset tình trạng phục vụ mẫu của cơ sở đó
+    setServingNum(15);
   };
 
   const handleLogout = () => {
@@ -89,6 +107,10 @@ export function App() {
       setUser(null);
       setIsGuest(false);
       localStorage.removeItem('spicy_box_user');
+      localStorage.removeItem('spicy_box_branch');
+      localStorage.removeItem('spicy_box_my_queue');
+      setSelectedBranch(null);
+      setMyNum(null);
       alert('Đã đăng xuất tài khoản thành công.');
     }
   };
@@ -129,8 +151,6 @@ export function App() {
 
   return (
     <div className="device-wrapper">
-      <div className="device-island"></div>
-
       {/* MÀN HÌNH CHÀO MỪNG NẾU CHƯA ĐĂNG NHẬP VÀ CHƯA CHỌN KHÁCH VÃNG LAI */}
       {!user && !isGuest ? (
         <WelcomeScreen
@@ -168,9 +188,11 @@ export function App() {
               <BookingTab
                 selectedBranch={selectedBranch}
                 onOpenBranchModal={() => setShowBranchModal(true)}
-                onBookingComplete={(pointsEarned, boxesEarned) => {
+                onBookingComplete={(pointsEarned, boxesEarned, assignedNum) => {
                   setPoints(prev => prev + pointsEarned);
                   setAvailableBoxes(prev => prev + boxesEarned);
+                  setMyNum(assignedNum);
+                  localStorage.setItem('spicy_box_my_queue', assignedNum.toString());
                 }}
                 onNavigateTab={tab => setActiveTab(tab)}
               />

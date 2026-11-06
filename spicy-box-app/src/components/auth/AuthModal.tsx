@@ -21,20 +21,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleQuickDemoLogin = () => {
-    const demoUser: UserProfile = {
-      name: 'Nguyễn Văn Tuấn',
-      phone: '0908 123 456',
-      memberCode: 'SPB-99812',
-      tier: 'GOLD VIP',
-      points: 120,
-    };
-    onLoginSuccess(demoUser);
-    localStorage.setItem('spicy_box_user', JSON.stringify(demoUser));
-    onClose();
-    setOtpSent(false);
-    setPhoneInput('');
-    alert('Đã đăng nhập thành công tài khoản: Nguyễn Văn Tuấn (GOLD VIP • 120 Ớt Vàng)!');
+  const handleFillDemoAccount = () => {
+    setNameInput('Khách Trải Nghiệm');
+    setPhoneInput('0908 123 456');
   };
 
   const handleLoginSubmit = () => {
@@ -226,7 +215,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             </div>
 
             <button
-              onClick={handleQuickDemoLogin}
+              onClick={handleFillDemoAccount}
               style={{
                 width: '100%',
                 padding: '10px',
@@ -243,7 +232,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 gap: '6px',
               }}
             >
-              ⚡ Đăng nhập nhanh tài khoản mẫu (Demo)
+              ⚡ Điền mẫu số điện thoại thử nghiệm
             </button>
           </>
         ) : (

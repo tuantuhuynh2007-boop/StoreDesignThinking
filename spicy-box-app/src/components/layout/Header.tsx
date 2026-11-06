@@ -3,7 +3,7 @@ import { MapPin, ChevronDown, LogIn } from 'lucide-react';
 import type { Branch, UserProfile } from '../../types';
 
 interface HeaderProps {
-  selectedBranch: Branch;
+  selectedBranch: Branch | null;
   user: UserProfile | null;
   points: number;
   onOpenBranchModal: () => void;
@@ -25,7 +25,7 @@ export const Header: React.FC<HeaderProps> = ({
         <img
           src="./assets/spicy-box-logo.png"
           alt="Spicy Box Logo"
-          style={{ height: '42px', objectFit: 'contain' }}
+          style={{ height: '38px', objectFit: 'contain' }}
         />
         <button
           onClick={onOpenBranchModal}
@@ -39,20 +39,22 @@ export const Header: React.FC<HeaderProps> = ({
             alignItems: 'center',
             gap: '3px',
           }}
-          title="Nhấn để đổi chi nhánh ăn lẩu"
+          title="Nhấn để chọn chi nhánh ăn lẩu"
         >
           <div
             className="branch-text"
             style={{
               fontWeight: 600,
-              color: 'var(--wood-dark)',
+              color: selectedBranch ? 'var(--wood-dark)' : 'var(--red-primary)',
               display: 'flex',
               alignItems: 'center',
               gap: '4px',
             }}
           >
-            <MapPin size={12} color="var(--red-primary)" />
-            <span>{selectedBranch.name.replace('Spicy Box ', '')}</span>
+            <MapPin size={13} color="var(--red-primary)" />
+            <span>
+              {selectedBranch ? selectedBranch.name.replace('Spicy Box ', '') : 'Chọn chi nhánh'}
+            </span>
             <ChevronDown size={13} color="var(--wood-medium)" />
           </div>
         </button>

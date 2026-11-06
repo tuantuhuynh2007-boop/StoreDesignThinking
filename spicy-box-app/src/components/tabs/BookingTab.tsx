@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Plus, Minus, ArrowLeft, ShieldCheck, Copy, Loader2, CheckCircle, Sparkles } from 'lucide-react';
+import { MapPin, Plus, Minus, ArrowLeft, ShieldCheck, Copy, Loader2, CheckCircle, Sparkles, Store } from 'lucide-react';
 import type { Branch, ActiveTab } from '../../types';
 import {
   ADULT_PRICE,
@@ -11,9 +11,9 @@ import {
 } from '../../data/constants';
 
 interface BookingTabProps {
-  selectedBranch: Branch;
+  selectedBranch: Branch | null;
   onOpenBranchModal: () => void;
-  onBookingComplete: (pointsEarned: number, boxesEarned: number) => void;
+  onBookingComplete: (pointsEarned: number, boxesEarned: number, myQueueNumber: number) => void;
   onNavigateTab: (tab: ActiveTab) => void;
 }
 
@@ -200,16 +200,16 @@ export const BookingTab: React.FC<BookingTabProps> = ({
                   padding: 0,
                 }}
               >
-                Đổi chi nhánh ➔
+                {selectedBranch ? 'Đổi chi nhánh ➔' : 'Chọn chi nhánh ➔'}
               </button>
             </div>
             <div
               onClick={onOpenBranchModal}
               style={{
-                padding: '10px 12px',
+                padding: '12px 14px',
                 borderRadius: '12px',
-                background: 'var(--bg-surface-subtle)',
-                border: '1.5px solid var(--wood-tint)',
+                background: selectedBranch ? 'var(--bg-surface-subtle)' : '#FFFBEB',
+                border: selectedBranch ? '1.5px solid var(--wood-tint)' : '1.5px dashed #F59E0B',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -217,27 +217,43 @@ export const BookingTab: React.FC<BookingTabProps> = ({
                 marginBottom: '18px',
               }}
             >
-              <div>
-                <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--wood-dark)' }}>
-                  {selectedBranch.name}
+              {selectedBranch ? (
+                <>
+                  <div>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--wood-dark)' }}>
+                      {selectedBranch.name}
+                    </div>
+                    <div style={{ fontSize: '11px', color: 'var(--wood-medium)', marginTop: '2px' }}>
+                      {selectedBranch.mall} • {selectedBranch.city}
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      fontSize: '11px',
+                      background: '#FEE2E2',
+                      color: 'var(--red-primary)',
+                      padding: '4px 8px',
+                      borderRadius: '8px',
+                      fontWeight: 700,
+                      flexShrink: 0,
+                    }}
+                  >
+                    Thay đổi
+                  </div>
+                </>
+              ) : (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Store size={18} color="#D97706" />
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#B45309' }}>
+                      Vui lòng bấm chọn chi nhánh ăn lẩu
+                    </span>
+                  </div>
+                  <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--red-primary)' }}>
+                    Chọn ngay ➔
+                  </span>
                 </div>
-                <div style={{ fontSize: '11px', color: 'var(--wood-medium)', marginTop: '2px' }}>
-                  {selectedBranch.mall} • {selectedBranch.city}
-                </div>
-              </div>
-              <div
-                style={{
-                  fontSize: '11px',
-                  background: '#FEE2E2',
-                  color: 'var(--red-primary)',
-                  padding: '4px 8px',
-                  borderRadius: '8px',
-                  fontWeight: 700,
-                  flexShrink: 0,
-                }}
-              >
-                Thay đổi
-              </div>
+              )}
             </div>
 
             {/* 1. Chọn ngày */}
@@ -604,6 +620,11 @@ export const BookingTab: React.FC<BookingTabProps> = ({
           <button
             className="btn-pill btn-red"
             onClick={() => {
+              if (!selectedBranch) {
+                alert('Vui lòng chọn chi nhánh nhà hàng Spicy Box trước!');
+                onOpenBranchModal();
+                return;
+              }
               if (!selectedSlot) {
                 alert('Vui lòng chọn khung giờ đến!');
                 return;
@@ -668,7 +689,7 @@ export const BookingTab: React.FC<BookingTabProps> = ({
                   fontWeight: 600,
                 }}
               >
-                {selectedBranch.name.replace('Spicy Box ', '')}
+                {selectedBranch ? selectedBranch.name.replace('Spicy Box ', '') : ''}
               </span>
             </div>
 
@@ -686,7 +707,7 @@ export const BookingTab: React.FC<BookingTabProps> = ({
                 <strong
                   style={{ color: 'var(--wood-dark)', textAlign: 'right', maxWidth: '60%' }}
                 >
-                  {selectedBranch.name} ({selectedBranch.mall})
+                  {selectedBranch?.name} ({selectedBranch?.mall})
                 </strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -1009,7 +1030,9 @@ export const BookingTab: React.FC<BookingTabProps> = ({
               setTimeout(() => {
                 setIsProcessing(false);
                 setBookingStep('success');
-                onBookingComplete(25, 1);
+                // Sinh số thứ tự mới cho khách sau khi đặt bàn
+                const assignedNum = Math.floor(19 + Math.random() * 5);
+                onBookingComplete(25, 1, assignedNum);
               }, 1400);
             }}
             style={{
@@ -1087,7 +1110,7 @@ export const BookingTab: React.FC<BookingTabProps> = ({
               <strong
                 style={{ color: 'var(--wood-dark)', textAlign: 'right', maxWidth: '60%' }}
               >
-                {selectedBranch.name} ({selectedBranch.mall})
+                {selectedBranch?.name} ({selectedBranch?.mall})
               </strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
@@ -1100,7 +1123,7 @@ export const BookingTab: React.FC<BookingTabProps> = ({
                   fontSize: '11px',
                 }}
               >
-                {selectedBranch.address}, {selectedBranch.city}
+                {selectedBranch?.address}, {selectedBranch?.city}
               </span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>

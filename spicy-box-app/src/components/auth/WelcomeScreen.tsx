@@ -27,19 +27,11 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   const [authLoading, setAuthLoading] = useState(false);
   const [regSuccessModal, setRegSuccessModal] = useState(false);
 
-  const handleQuickDemoLogin = () => {
-    const demoUser: UserProfile = {
-      name: 'Nguyễn Văn Tuấn',
-      phone: '0908 123 456',
-      memberCode: 'SPB-99812',
-      tier: 'GOLD VIP',
-      points: 120,
-    };
-    onLoginSuccess(demoUser);
-    if (rememberMe) {
-      localStorage.setItem('spicy_box_user', JSON.stringify(demoUser));
-    }
-    alert('Đã đăng nhập thành công tài khoản: Nguyễn Văn Tuấn (GOLD VIP • 120 Ớt Vàng)!');
+  const handleFillDemoAccount = () => {
+    setAuthMode('login');
+    setAuthMethod('password');
+    setPhoneInput('0908123456');
+    setPasswordInput('123456');
   };
 
   const handleLoginSubmit = async () => {
@@ -92,8 +84,19 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           return;
         } else {
           if (cleanPhone === '0908123456' && passwordInput === '123456') {
-            handleQuickDemoLogin();
+            const demoUser: UserProfile = {
+              name: 'Nguyễn Văn Tuấn',
+              phone: '0908123456',
+              memberCode: 'SPB-99812',
+              tier: 'GOLD VIP',
+              points: 120,
+            };
+            if (rememberMe) {
+              localStorage.setItem('spicy_box_user', JSON.stringify(demoUser));
+            }
             setAuthLoading(false);
+            onLoginSuccess(demoUser);
+            alert(`Đăng nhập thành công! Chào mừng ${demoUser.name} (${demoUser.tier})`);
             return;
           }
           setAuthLoading(false);
@@ -105,7 +108,14 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         console.error(err);
         setAuthLoading(false);
         if (cleanPhone === '0908123456' && passwordInput === '123456') {
-          handleQuickDemoLogin();
+          const demoUser: UserProfile = {
+            name: 'Nguyễn Văn Tuấn',
+            phone: '0908123456',
+            memberCode: 'SPB-99812',
+            tier: 'GOLD VIP',
+            points: 120,
+          };
+          onLoginSuccess(demoUser);
           return;
         }
         alert('Không thể kết nối đến máy chủ. Đang đăng nhập ở chế độ ngoại tuyến...');
@@ -895,7 +905,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         </div>
 
         <button
-          onClick={handleQuickDemoLogin}
+          onClick={handleFillDemoAccount}
           style={{
             width: '100%',
             padding: '10px',
@@ -912,7 +922,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
             gap: '6px',
           }}
         >
-          ⚡ Đăng nhập 1 chạm (Tài khoản mẫu VIP)
+          ⚡ Điền mẫu tài khoản thử nghiệm (Demo)
         </button>
       </div>
 

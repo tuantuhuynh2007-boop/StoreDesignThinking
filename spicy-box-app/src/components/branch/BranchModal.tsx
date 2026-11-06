@@ -6,7 +6,7 @@ import { BRANCHES, CITIES } from '../../data/constants';
 interface BranchModalProps {
   isOpen: boolean;
   onClose: () => void;
-  selectedBranch: Branch;
+  selectedBranch: Branch | null;
   onSelectBranch: (branch: Branch) => void;
 }
 
@@ -30,7 +30,7 @@ export const BranchModal: React.FC<BranchModalProps> = ({
       <div
         className="modal-content"
         style={{
-          maxWidth: '400px',
+          maxWidth: '460px',
           textAlign: 'left',
           position: 'relative',
           padding: '22px 18px',
@@ -69,7 +69,7 @@ export const BranchModal: React.FC<BranchModalProps> = ({
             </h3>
           </div>
           <p style={{ fontSize: '12px', color: 'var(--wood-medium)', marginTop: '4px' }}>
-            Chọn tỉnh/thành phố để xem các cơ sở Spicy Box gần bạn nhất
+            Chọn cơ sở Spicy Box gần bạn nhất để theo dõi hàng chờ và đặt bàn
           </p>
         </div>
 
@@ -238,7 +238,7 @@ export const BranchModal: React.FC<BranchModalProps> = ({
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {branchesInCity.map(b => {
-                      const isSelected = selectedBranch.id === b.id;
+                      const isSelected = selectedBranch?.id === b.id;
                       return (
                         <div
                           key={b.id}
