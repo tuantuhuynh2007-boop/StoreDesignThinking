@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Home, Calendar, Gift, BookOpen, Ticket, CheckCircle, Sparkles, Plus, Minus, ArrowLeft, ShieldCheck, Copy, Loader2, LogIn, LogOut, X, MapPin, ChevronDown } from 'lucide-react';
+import { Home, Calendar, Gift, BookOpen, Ticket, CheckCircle, Sparkles, Plus, Minus, ArrowLeft, ShieldCheck, Copy, Loader2, LogIn, LogOut, X, MapPin, ChevronDown, Search } from 'lucide-react';
 import type { Season, Mascot } from './types';
 import { INITIAL_MASCOTS } from './data/mascots';
 
@@ -8,19 +8,41 @@ export interface Branch {
   name: string;
   mall: string;
   address: string;
-  district: string;
+  city: string;
+  region: 'Miền Nam' | 'Miền Bắc' | 'Miền Trung' | 'Miền Tây';
   hotline: string;
 }
 
 export const BRANCHES: Branch[] = [
-  { id: 'thaodien', name: 'Spicy Box Vincom Thảo Điền', mall: 'Tầng 4, Vincom Mega Mall Thảo Điền', address: '161 Xa Lộ Hà Nội, P. Thảo Điền', district: 'TP. Thủ Đức', hotline: '028 3620 9099' },
-  { id: 'saigoncentre', name: 'Spicy Box Saigon Centre', mall: 'Tầng B2, Saigon Centre', address: '65 Lê Lợi, P. Bến Nghé', district: 'Quận 1', hotline: '028 3821 1122' },
-  { id: 'vanhanh', name: 'Spicy Box Vạn Hạnh Mall', mall: 'Tầng B, Vạn Hạnh Mall', address: '11 Sư Vạn Hạnh, Phường 12', district: 'Quận 10', hotline: '028 3862 8899' },
-  { id: 'gigamall', name: 'Spicy Box Gigamall', mall: 'Tầng 5, TTTM Gigamall', address: '240-242 Phạm Văn Đồng, P. Hiệp Bình Chánh', district: 'TP. Thủ Đức', hotline: '028 3636 5588' },
-  { id: 'crescent', name: 'Spicy Box Crescent Mall', mall: 'Tầng 5, Crescent Mall', address: '101 Tôn Dật Tiên, P. Tân Phú', district: 'Quận 7', hotline: '028 5413 7799' },
-  { id: 'estella', name: 'Spicy Box Estella Place', mall: 'Tầng 4, Estella Place', address: '88 Song Hành, P. An Phú', district: 'TP. Thủ Đức', hotline: '028 3636 3311' },
-  { id: 'gonguyenthithap', name: 'Spicy Box GO! Nguyễn Thị Thập', mall: 'Tầng 2, GO! Nguyễn Thị Thập', address: '99 Nguyễn Thị Thập, P. Tân Phú', district: 'Quận 7', hotline: '028 3775 6677' },
-  { id: 'parcmall', name: 'Spicy Box Parcmall', mall: 'Tầng 4, TTTM Parcmall', address: '547 Tạ Quang Bửu, Phường 4', district: 'Quận 8', hotline: '028 3850 4488' },
+  // --- TP. HỒ CHÍ MINH (MIỀN NAM) ---
+  { id: 'thaodien', name: 'Spicy Box Vincom Thảo Điền', mall: 'Tầng 4, Vincom Mega Mall Thảo Điền', address: '161 Xa Lộ Hà Nội, P. Thảo Điền', city: 'TP. Hồ Chí Minh', region: 'Miền Nam', hotline: '028 3620 9099' },
+  { id: 'saigoncentre', name: 'Spicy Box Saigon Centre', mall: 'Tầng B2, Saigon Centre', address: '65 Lê Lợi, P. Bến Nghé, Quận 1', city: 'TP. Hồ Chí Minh', region: 'Miền Nam', hotline: '028 3821 1122' },
+  { id: 'vanhanh', name: 'Spicy Box Vạn Hạnh Mall', mall: 'Tầng B, Vạn Hạnh Mall', address: '11 Sư Vạn Hạnh, Phường 12, Quận 10', city: 'TP. Hồ Chí Minh', region: 'Miền Nam', hotline: '028 3862 8899' },
+  { id: 'gigamall', name: 'Spicy Box Gigamall', mall: 'Tầng 5, TTTM Gigamall', address: '240-242 Phạm Văn Đồng, P. Hiệp Bình Chánh', city: 'TP. Hồ Chí Minh', region: 'Miền Nam', hotline: '028 3636 5588' },
+  { id: 'crescent', name: 'Spicy Box Crescent Mall', mall: 'Tầng 5, Crescent Mall', address: '101 Tôn Dật Tiên, P. Tân Phú, Quận 7', city: 'TP. Hồ Chí Minh', region: 'Miền Nam', hotline: '028 5413 7799' },
+  { id: 'aeontanphu', name: 'Spicy Box AEON Mall Tân Phú', mall: 'Tầng 3, AEON Mall Tân Phú Celadon', address: '30 Bờ Bao Tân Thắng, P. Sơn Kỳ, Q. Tân Phú', city: 'TP. Hồ Chí Minh', region: 'Miền Nam', hotline: '028 6288 7733' },
+  { id: 'estella', name: 'Spicy Box Estella Place', mall: 'Tầng 4, Estella Place', address: '88 Song Hành, P. An Phú, TP. Thủ Đức', city: 'TP. Hồ Chí Minh', region: 'Miền Nam', hotline: '028 3636 3311' },
+  { id: 'gonguyenthithap', name: 'Spicy Box GO! Nguyễn Thị Thập', mall: 'Tầng 2, GO! Nguyễn Thị Thập', address: '99 Nguyễn Thị Thập, P. Tân Phú, Quận 7', city: 'TP. Hồ Chí Minh', region: 'Miền Nam', hotline: '028 3775 6677' },
+  { id: 'parcmall', name: 'Spicy Box Parcmall', mall: 'Tầng 4, TTTM Parcmall', address: '547 Tạ Quang Bửu, Phường 4, Quận 8', city: 'TP. Hồ Chí Minh', region: 'Miền Nam', hotline: '028 3850 4488' },
+
+  // --- HÀ NỘI & HẢI PHÒNG (MIỀN BẮC) ---
+  { id: 'lottewestlake', name: 'Spicy Box Lotte Mall Tây Hồ', mall: 'Tầng 3, Lotte Mall West Lake', address: '272 Võ Chí Công, P. Phú Thượng, Q. Tây Hồ', city: 'Hà Nội', region: 'Miền Bắc', hotline: '024 3333 8899' },
+  { id: 'aeonhadong', name: 'Spicy Box AEON Mall Hà Đông', mall: 'Tầng 2, AEON Mall Hà Đông', address: 'Khu dân cư Hoàng Văn Thụ, P. Dương Nội, Q. Hà Đông', city: 'Hà Nội', region: 'Miền Bắc', hotline: '024 3765 4422' },
+  { id: 'aeonlechan', name: 'Spicy Box AEON Mall Lê Chân', mall: 'Tầng 1, AEON Mall Hải Phòng Lê Chân', address: '10 Võ Nguyên Giáp, P. Kênh Dương, Q. Lê Chân', city: 'Hải Phòng', region: 'Miền Bắc', hotline: '0225 355 6688' },
+
+  // --- ĐÀ NẴNG, HUẾ & NHA TRANG (MIỀN TRUNG) ---
+  { id: 'aeondanang', name: 'Spicy Box AEON Mall Thanh Khê', mall: 'Tầng 3, AEON Mall Thanh Khê', address: '46 Điện Biên Phủ, P. Chính Gián, Q. Thanh Khê', city: 'Đà Nẵng', region: 'Miền Trung', hotline: '0236 388 9922' },
+  { id: 'lottedanang', name: 'Spicy Box Lotte Mart Đà Nẵng', mall: 'Tầng 2 (2F-28), Lotte Mart Đà Nẵng', address: '06 Nại Nam, P. Hòa Cường Bắc, Q. Hải Châu', city: 'Đà Nẵng', region: 'Miền Trung', hotline: '0236 361 1155' },
+  { id: 'aeonhue', name: 'Spicy Box AEON Mall Huế', mall: 'Tầng 1, TTTM AEON Mall Huế', address: '8 Võ Nguyên Giáp, P. An Đông', city: 'Huế', region: 'Miền Trung', hotline: '0234 388 6699' },
+  { id: 'gonhatrang', name: 'Spicy Box GO! Nha Trang', mall: 'Tầng 1, TTTM GO! Nha Trang', address: 'Lô 4, Đường 19/5, KĐT Vĩnh Điềm Trung', city: 'Nha Trang', region: 'Miền Trung', hotline: '0258 389 4488' },
+
+  // --- BÌNH DƯƠNG & ĐỒNG NAI (ĐÔNG NAM BỘ) ---
+  { id: 'aeonbinhduong', name: 'Spicy Box AEON Mall Canary', mall: 'Tầng 1, AEON Mall Bình Dương Canary', address: '01 Đại lộ Bình Dương, Thuận Giao, TP. Thuận An', city: 'Bình Dương', region: 'Miền Nam', hotline: '0274 625 9933' },
+  { id: 'godian', name: 'Spicy Box GO! Dĩ An', mall: 'Tầng trệt, TTTM GO! Dĩ An', address: 'Quốc lộ 1K, P. Đông Hòa, TP. Dĩ An', city: 'Bình Dương', region: 'Miền Nam', hotline: '0274 377 8822' },
+  { id: 'coopbienhoa', name: 'Spicy Box Co.opmart Biên Hòa', mall: 'Tầng 2, Co.opmart Biên Hòa', address: '121 Phạm Văn Thuận, P. Thống Nhất, TP. Biên Hòa', city: 'Đồng Nai', region: 'Miền Nam', hotline: '0251 382 7799' },
+
+  // --- CẦN THƠ & MIỀN TÂY ---
+  { id: 'sensecitycantho', name: 'Spicy Box Sense City Cần Thơ', mall: 'Tầng 2 (L2-011), TTTM Sense City', address: '01 Đại lộ Hòa Bình, P. Tân An, Q. Ninh Kiều', city: 'Cần Thơ', region: 'Miền Tây', hotline: '0292 368 8899' },
 ];
 
 export interface UserProfile {
@@ -188,6 +210,8 @@ export function App() {
     return BRANCHES[0];
   });
   const [showBranchModal, setShowBranchModal] = useState(false);
+  const [branchRegionFilter, setBranchRegionFilter] = useState<string>('Tất cả');
+  const [branchSearchQuery, setBranchSearchQuery] = useState<string>('');
 
   const handleSelectBranch = (branch: Branch) => {
     setSelectedBranch(branch);
@@ -537,7 +561,7 @@ export function App() {
                         {selectedBranch.name}
                       </div>
                       <div style={{ fontSize: '11px', color: 'var(--wood-medium)', marginTop: '2px' }}>
-                        {selectedBranch.mall} • {selectedBranch.district}
+                        {selectedBranch.mall} • {selectedBranch.city}
                       </div>
                     </div>
                     <div style={{
@@ -1004,7 +1028,7 @@ export function App() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
                     <span style={{ color: 'var(--wood-medium)' }}>Địa chỉ:</span>
                     <span style={{ color: 'var(--wood-dark)', textAlign: 'right', maxWidth: '60%', fontSize: '11px' }}>
-                      {selectedBranch.address}, {selectedBranch.district}
+                      {selectedBranch.address}, {selectedBranch.city}
                     </span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
@@ -1506,17 +1530,73 @@ export function App() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <MapPin size={20} color="var(--red-primary)" />
                 <h3 style={{ fontSize: '17px', fontWeight: 700, color: 'var(--wood-dark)' }}>
-                  Chọn chi nhánh Spicy Box
+                  Hệ thống chi nhánh Spicy Box toàn quốc
                 </h3>
               </div>
               <p style={{ fontSize: '12px', color: 'var(--wood-medium)', marginTop: '4px' }}>
-                Chọn nhà hàng gần bạn nhất để xem số chờ và đặt bàn
+                Chọn nhà hàng gần bạn tại TP.HCM, Hà Nội, Đà Nẵng, Hải Phòng, Huế, Cần Thơ...
               </p>
+            </div>
+
+            {/* Ô tìm kiếm nhanh chi nhánh */}
+            <div style={{ position: 'relative', marginBottom: '10px' }}>
+              <Search size={15} color="var(--wood-medium)" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }} />
+              <input
+                type="text"
+                placeholder="Tìm theo tên chi nhánh, TTTM, tỉnh thành..."
+                value={branchSearchQuery}
+                onChange={e => setBranchSearchQuery(e.target.value)}
+                style={{
+                  width: '100%', padding: '9px 12px 9px 34px', borderRadius: '12px',
+                  border: '1.5px solid var(--wood-tint)', fontSize: '12px', outline: 'none',
+                  boxSizing: 'border-box'
+                }}
+              />
+              {branchSearchQuery && (
+                <button
+                  onClick={() => setBranchSearchQuery('')}
+                  style={{
+                    position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
+                    background: 'none', border: 'none', color: 'var(--wood-medium)', cursor: 'pointer', fontSize: '12px'
+                  }}
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            {/* Bộ lọc vùng miền */}
+            <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', paddingBottom: '8px', marginBottom: '10px' }}>
+              {['Tất cả', 'Miền Nam', 'Miền Bắc', 'Miền Trung', 'Miền Tây'].map(r => (
+                <button
+                  key={r}
+                  onClick={() => setBranchRegionFilter(r)}
+                  style={{
+                    padding: '5px 12px', borderRadius: '9999px', border: 'none', cursor: 'pointer',
+                    fontSize: '11px', fontWeight: 600, whiteSpace: 'nowrap',
+                    background: branchRegionFilter === r ? 'var(--red-primary)' : 'var(--bg-surface-subtle)',
+                    color: branchRegionFilter === r ? '#fff' : 'var(--wood-dark)',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  {r}
+                </button>
+              ))}
             </div>
 
             {/* Danh sách các chi nhánh */}
             <div style={{ overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', paddingRight: '4px' }}>
-              {BRANCHES.map(b => {
+              {BRANCHES
+                .filter(b => {
+                  const matchRegion = branchRegionFilter === 'Tất cả' || b.region === branchRegionFilter;
+                  const matchSearch = !branchSearchQuery.trim() ||
+                    b.name.toLowerCase().includes(branchSearchQuery.toLowerCase()) ||
+                    b.mall.toLowerCase().includes(branchSearchQuery.toLowerCase()) ||
+                    b.city.toLowerCase().includes(branchSearchQuery.toLowerCase()) ||
+                    b.address.toLowerCase().includes(branchSearchQuery.toLowerCase());
+                  return matchRegion && matchSearch;
+                })
+                .map(b => {
                 const isSelected = selectedBranch.id === b.id;
                 return (
                   <div
@@ -1535,9 +1615,12 @@ export function App() {
                     }}
                   >
                     <div style={{ flex: 1, paddingRight: '8px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <span style={{ fontSize: '14px', fontWeight: 700, color: isSelected ? 'var(--red-primary)' : 'var(--wood-dark)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '13px', fontWeight: 700, color: isSelected ? 'var(--red-primary)' : 'var(--wood-dark)' }}>
                           {b.name}
+                        </span>
+                        <span style={{ fontSize: '10px', background: '#F3F4F6', color: '#4B5563', padding: '1px 6px', borderRadius: '4px', fontWeight: 600 }}>
+                          {b.city}
                         </span>
                         {isSelected && (
                           <span style={{ fontSize: '10px', background: 'var(--red-primary)', color: '#fff', padding: '1px 6px', borderRadius: '6px', fontWeight: 700 }}>
@@ -1549,7 +1632,7 @@ export function App() {
                         📍 {b.mall}
                       </div>
                       <div style={{ fontSize: '11px', color: 'var(--wood-medium)', marginTop: '2px' }}>
-                        {b.address}, {b.district}
+                        {b.address}
                       </div>
                       <div style={{ fontSize: '10px', color: '#047857', marginTop: '3px', fontWeight: 600 }}>
                         📞 {b.hotline} • ⏰ 09:30 - 22:00
