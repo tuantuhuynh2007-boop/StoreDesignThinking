@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { MapPin, Plus, Minus, ArrowLeft, ShieldCheck, Copy, Loader2, CheckCircle, Sparkles, Store } from 'lucide-react';
 import type { Branch, ActiveTab } from '../../types';
+import type { BookingTableType } from '../../bookingSlots';
+import { BookingHoldExpiredError, useBookingSlots } from '../../hooks/useBookingSlots';
+import { BookingSlotPicker } from '../booking/BookingSlotPicker';
 import {
   ADULT_PRICE,
   CHILD_PRICE,
   PAYMENT_METHODS,
   SPICY_LEVELS,
   DATES,
-  SESSION_SLOTS,
 } from '../../data/constants';
 
 interface BookingTabProps {
@@ -25,7 +27,7 @@ export const BookingTab: React.FC<BookingTabProps> = ({
 }) => {
   const [bookingStep, setBookingStep] = useState<'form' | 'payment' | 'success'>('form');
   const [selectedDate, setSelectedDate] = useState(DATES[0].key);
-  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [tableType, setTableType] = useState<BookingTableType>('standard');
   const [adultCount, setAdultCount] = useState(2);
   const [childCount, setChildCount] = useState(0);
   const [spicyLevel, setSpicyLevel] = useState<string | null>(null);
@@ -35,6 +37,33 @@ export const BookingTab: React.FC<BookingTabProps> = ({
   const [copiedMemo, setCopiedMemo] = useState(false);
 
   const totalPrice = adultCount * ADULT_PRICE + childCount * CHILD_PRICE;
+  const partySize = adultCount + childCount;
+  const minPartySize = tableType === 'birthday' ? 8 : 1;
+  const maxPartySize = tableType === 'birthday' ? 12 : 4;
+  const {
+    metrics: slotMetrics,
+    selectedSlot,
+    claimingSlot,
+    isLoading: areSlotsLoading,
+    loadError: slotLoadError,
+    actionError: slotActionError,
+    selectSlot,
+    releaseSelection,
+    confirmSelection,
+    refresh: refreshSlots,
+  } = useBookingSlots({
+    branchCode: selectedBranch?.id,
+    bookingDate: selectedDate,
+    tableType,
+    partySize,
+  });
+
+  const handleTableTypeChange = (nextType: BookingTableType) => {
+    setTableType(nextType);
+    const nextPartySize = nextType === 'birthday' ? 8 : Math.min(Math.max(partySize, 1), 4);
+    setAdultCount(nextPartySize);
+    setChildCount(0);
+  };
 
   return (
     <div>
@@ -302,62 +331,25 @@ export const BookingTab: React.FC<BookingTabProps> = ({
               ))}
             </div>
 
-            {/* 2. Khung giờ */}
-            <label
-              style={{
-                fontSize: '13px',
-                fontWeight: 600,
-                display: 'block',
-                marginBottom: '10px',
-                color: 'var(--wood-dark)',
-              }}
-            >
-              2. Chọn khung giờ đến (9:30 - 22:00)
-            </label>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '4px' }}>
-              {SESSION_SLOTS.map(session => (
-                <div key={session.label}>
-                  <div
-                    style={{
-                      fontSize: '11px',
-                      fontWeight: 700,
-                      color: 'var(--wood-medium)',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px',
-                      marginBottom: '8px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                    }}
-                  >
-                    {session.emoji} {session.label}
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
-                    {session.slots.map(slot => (
-                      <button
-                        key={slot}
-                        onClick={() => setSelectedSlot(slot)}
-                        style={{
-                          padding: '8px 4px',
-                          borderRadius: '10px',
-                          border: 'none',
-                          cursor: 'pointer',
-                          fontSize: '13px',
-                          fontWeight: selectedSlot === slot ? 700 : 500,
-                          background: selectedSlot === slot ? 'var(--red-primary)' : 'var(--bg-surface-subtle)',
-                          color: selectedSlot === slot ? '#fff' : 'var(--wood-dark)',
-                          transition: 'all 0.18s',
-                          boxShadow: selectedSlot === slot ? '0 2px 8px rgba(197,34,31,0.3)' : 'none',
-                        }}
-                      >
-                        {slot}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
+
+          <BookingSlotPicker
+            tableType={tableType}
+            partySize={partySize}
+            metrics={slotMetrics}
+            selectedSlot={selectedSlot}
+            claimingSlot={claimingSlot}
+            isLoading={areSlotsLoading}
+            loadError={selectedBranch ? slotLoadError : 'Vui lòng chọn chi nhánh trước khi xem sức chứa.'}
+            actionError={slotActionError}
+            onTableTypeChange={handleTableTypeChange}
+            onPartySizeChange={size => {
+              setAdultCount(size);
+              setChildCount(0);
+            }}
+            onSelectSlot={timeSlot => void selectSlot(timeSlot)}
+            onRetry={selectedBranch ? () => void refreshSlots() : onOpenBranchModal}
+          />
 
           <div className="card-box">
             {/* 3. Số lượng khách */}
@@ -370,7 +362,7 @@ export const BookingTab: React.FC<BookingTabProps> = ({
               }}
             >
               <label style={{ fontSize: '13px', fontWeight: 600, color: 'var(--wood-dark)', margin: 0 }}>
-                3. Số lượng vé Buffet Tokpokki
+                3. Phân loại vé trong {partySize} khách
               </label>
               <span
                 style={{
@@ -403,6 +395,7 @@ export const BookingTab: React.FC<BookingTabProps> = ({
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                 <button
+                  disabled={partySize <= minPartySize || adultCount <= 1}
                   onClick={() => setAdultCount(prev => Math.max(1, prev - 1))}
                   style={{
                     width: 34,
@@ -410,7 +403,8 @@ export const BookingTab: React.FC<BookingTabProps> = ({
                     borderRadius: '50%',
                     border: '1.5px solid var(--wood-light)',
                     background: '#fff',
-                    cursor: 'pointer',
+                    cursor: partySize <= minPartySize || adultCount <= 1 ? 'not-allowed' : 'pointer',
+                    opacity: partySize <= minPartySize || adultCount <= 1 ? 0.45 : 1,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -429,7 +423,8 @@ export const BookingTab: React.FC<BookingTabProps> = ({
                   {adultCount}
                 </span>
                 <button
-                  onClick={() => setAdultCount(prev => Math.min(20, prev + 1))}
+                  disabled={partySize >= maxPartySize}
+                  onClick={() => setAdultCount(prev => prev + 1)}
                   style={{
                     width: 34,
                     height: 34,
@@ -437,7 +432,8 @@ export const BookingTab: React.FC<BookingTabProps> = ({
                     border: 'none',
                     background: 'var(--red-primary)',
                     color: '#fff',
-                    cursor: 'pointer',
+                    cursor: partySize >= maxPartySize ? 'not-allowed' : 'pointer',
+                    opacity: partySize >= maxPartySize ? 0.45 : 1,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -466,6 +462,7 @@ export const BookingTab: React.FC<BookingTabProps> = ({
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                 <button
+                  disabled={partySize <= minPartySize || childCount <= 0}
                   onClick={() => setChildCount(prev => Math.max(0, prev - 1))}
                   style={{
                     width: 34,
@@ -473,7 +470,8 @@ export const BookingTab: React.FC<BookingTabProps> = ({
                     borderRadius: '50%',
                     border: '1.5px solid var(--wood-light)',
                     background: '#fff',
-                    cursor: 'pointer',
+                    cursor: partySize <= minPartySize || childCount <= 0 ? 'not-allowed' : 'pointer',
+                    opacity: partySize <= minPartySize || childCount <= 0 ? 0.45 : 1,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -492,7 +490,8 @@ export const BookingTab: React.FC<BookingTabProps> = ({
                   {childCount}
                 </span>
                 <button
-                  onClick={() => setChildCount(prev => Math.min(10, prev + 1))}
+                  disabled={partySize >= maxPartySize}
+                  onClick={() => setChildCount(prev => prev + 1)}
                   style={{
                     width: 34,
                     height: 34,
@@ -500,7 +499,8 @@ export const BookingTab: React.FC<BookingTabProps> = ({
                     border: 'none',
                     background: 'var(--red-primary)',
                     color: '#fff',
-                    cursor: 'pointer',
+                    cursor: partySize >= maxPartySize ? 'not-allowed' : 'pointer',
+                    opacity: partySize >= maxPartySize ? 0.45 : 1,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -1027,13 +1027,20 @@ export const BookingTab: React.FC<BookingTabProps> = ({
             disabled={isProcessing}
             onClick={() => {
               setIsProcessing(true);
-              setTimeout(() => {
-                setIsProcessing(false);
-                setBookingStep('success');
-                // Sinh số thứ tự mới cho khách sau khi đặt bàn
-                const assignedNum = Math.floor(19 + Math.random() * 5);
-                // Tặng ngay 25 điểm Ớt Vàng cho mỗi lần ăn ở Spicy Box
-                onBookingComplete(25, 1, assignedNum);
+              setTimeout(async () => {
+                try {
+                  await confirmSelection();
+                  setBookingStep('success');
+                  // Sinh số thứ tự mới cho khách sau khi đặt bàn
+                  const assignedNum = Math.floor(19 + Math.random() * 5);
+                  // Tặng ngay 25 điểm Ớt Vàng cho mỗi lần ăn ở Spicy Box
+                  onBookingComplete(25, 1, assignedNum);
+                } catch (cause) {
+                  alert(cause instanceof Error ? cause.message : 'Không thể xác nhận lượt giữ bàn.');
+                  if (cause instanceof BookingHoldExpiredError) setBookingStep('form');
+                } finally {
+                  setIsProcessing(false);
+                }
               }, 1400);
             }}
             style={{
@@ -1183,7 +1190,7 @@ export const BookingTab: React.FC<BookingTabProps> = ({
               className="btn-pill btn-outline"
               onClick={() => {
                 setBookingStep('form');
-                setSelectedSlot(null);
+                void releaseSelection();
                 setSpicyLevel(null);
                 setBookingCode(`SPB-${Math.floor(10000 + Math.random() * 90000)}`);
               }}
