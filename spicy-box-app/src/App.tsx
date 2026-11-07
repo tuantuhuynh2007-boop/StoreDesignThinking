@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { supabase } from './supabaseClient';
 import type { Season, Mascot, Branch, UserProfile, ActiveTab } from './types';
 import { BRANCHES } from './data/constants';
 import { INITIAL_MASCOTS } from './data/mascots';
@@ -123,18 +124,37 @@ export function App() {
     setAvailableBoxes(prev => prev - 1);
 
     const seasonMascots = mascots.filter(m => m.season === currentSeason);
-    const randomDuck = seasonMascots[Math.floor(Math.random() * seasonMascots.length)];
 
+    // Tính toán mở quà ngẫu nhiên theo tỷ lệ % dropRate thực tế (Tổng = 100%)
+    // Vd: Giận Dỗi 5%, Ngạc Nhiên 10%, Chu Mỏ 15%, Mếu Máo 15%, Chào Hỏi 25%, Vui Vẻ 30%
+    const rand = Math.random() * 100;
+    let accumulated = 0;
+    let selectedDuck = seasonMascots[0];
+
+    for (const duck of seasonMascots) {
+      accumulated += duck.dropRate || 16.66;
+      if (rand <= accumulated) {
+        selectedDuck = duck;
+        break;
+      }
+    }
+
+    // Tăng count (hỗ trợ trùng lặp nhiều con cùng loại)
     setMascots(prev =>
       prev.map(m => {
-        if (m.id === randomDuck.id) {
-          return { ...m, isUnlocked: true, count: m.count + 1 };
+        if (m.id === selectedDuck.id) {
+          const updatedCount = m.count + 1;
+          return { ...m, isUnlocked: true, count: updatedCount };
         }
         return m;
       })
     );
 
-    setUnlockedDuck(randomDuck);
+    setUnlockedDuck({
+      ...selectedDuck,
+      isUnlocked: true,
+      count: selectedDuck.count + 1,
+    });
   };
 
   const handleRedeem = (title: string, cost: number) => {
@@ -189,10 +209,35 @@ export function App() {
                 selectedBranch={selectedBranch}
                 onOpenBranchModal={() => setShowBranchModal(true)}
                 onBookingComplete={(pointsEarned, boxesEarned, assignedNum) => {
-                  setPoints(prev => prev + pointsEarned);
+                  setPoints(prev => {
+                    const newPoints = prev + pointsEarned;
+                    return newPoints;
+                  });
                   setAvailableBoxes(prev => prev + boxesEarned);
                   setMyNum(assignedNum);
                   localStorage.setItem('spicy_box_my_queue', assignedNum.toString());
+
+                  // Lưu số lần khách đặt bàn / dùng bữa và điểm tích luỹ
+                  if (user) {
+                    const updatedUser = {
+                      ...user,
+                      points: (user.points || 0) + pointsEarned,
+                      bookingCount: (user.bookingCount || 0) + 1,
+                    };
+                    setUser(updatedUser);
+                    localStorage.setItem('spicy_box_user', JSON.stringify(updatedUser));
+
+                    if (supabase) {
+                      supabase
+                        .from('users')
+                        .update({
+                          points_balance: updatedUser.points,
+                          booking_count: updatedUser.bookingCount,
+                        })
+                        .eq('phone', user.phone)
+                        .then(() => {});
+                    }
+                  }
                 }}
                 onNavigateTab={tab => setActiveTab(tab)}
               />

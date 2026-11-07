@@ -17,6 +17,7 @@ export interface Mascot {
   rarity: 'COMMON' | 'RARE' | 'LEGENDARY';
   isUnlocked: boolean;
   count: number;
+  dropRate: number; // Tỷ lệ % xuất hiện (vd: 5%, 10%, 35%...)
 }
 
 export interface QueueItem {
@@ -55,6 +56,7 @@ export interface UserProfile {
   memberCode: string;
   tier: string;
   points?: number;
+  bookingCount?: number; // Số lần đã đặt bàn tại Spicy Box
 }
 
 export type ActiveTab = 'home' | 'booking' | 'gacha' | 'album' | 'rewards';

@@ -1032,7 +1032,8 @@ export const BookingTab: React.FC<BookingTabProps> = ({
                 setBookingStep('success');
                 // Sinh số thứ tự mới cho khách sau khi đặt bàn
                 const assignedNum = Math.floor(19 + Math.random() * 5);
-                onBookingComplete(25, 1, assignedNum);
+                // Tặng ngay 50 điểm Ớt Vàng cho mỗi lần ăn ở Spicy Box
+                onBookingComplete(50, 1, assignedNum);
               }, 1400);
             }}
             style={{
@@ -1167,7 +1168,10 @@ export const BookingTab: React.FC<BookingTabProps> = ({
           >
             <div>🎁 Nhận ngay <strong>+1 Lượt Mở Hộp Mù Blind Box</strong>!</div>
             <div style={{ marginTop: '2px' }}>
-              🌶️ Đã tích lũy <strong>+25 Ớt Vàng</strong> vào ví thành viên!
+              🌶️ Đã tích lũy thành công <strong>+50 Ớt Vàng</strong> vào ví thành viên!
+            </div>
+            <div style={{ fontSize: '11px', color: '#B45309', marginTop: '2px' }}>
+              (Số lần ăn tại quán đã được cập nhật vào lịch sử hội viên)
             </div>
           </div>
 

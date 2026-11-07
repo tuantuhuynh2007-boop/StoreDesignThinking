@@ -70,6 +70,25 @@ export const RewardsTab: React.FC<RewardsTabProps> = ({
           <div style={{ fontSize: '11px', opacity: 0.8, marginTop: '6px' }}>
             Mã thành viên: #{user.memberCode}
           </div>
+          <div
+            style={{
+              marginTop: '12px',
+              paddingTop: '12px',
+              borderTop: '1px solid rgba(255,255,255,0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              fontSize: '12px',
+            }}
+          >
+            <span>🍲 Số lần ăn lẩu tại Spicy Box:</span>
+            <span style={{ fontWeight: 700, color: '#FDE047', fontSize: '14px' }}>
+              {user.bookingCount || 0} lần
+            </span>
+          </div>
+          <div style={{ fontSize: '11px', color: '#FCD34D', opacity: 0.9, marginTop: '4px' }}>
+            ✨ Mỗi lần ăn tại Spicy Box nhận ngay +50 Ớt Vàng
+          </div>
         </div>
       ) : (
         <div

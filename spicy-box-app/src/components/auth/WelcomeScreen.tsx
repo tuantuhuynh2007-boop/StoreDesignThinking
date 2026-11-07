@@ -5,12 +5,11 @@ import type { UserProfile } from '../../types';
 
 interface WelcomeScreenProps {
   onLoginSuccess: (user: UserProfile) => void;
-  onContinueAsGuest: () => void;
+  onContinueAsGuest?: () => void;
 }
 
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   onLoginSuccess,
-  onContinueAsGuest,
 }) => {
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [authMethod, setAuthMethod] = useState<'password' | 'otp'>('password');
@@ -926,25 +925,10 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         </button>
       </div>
 
-      {/* KHỐI LỐI THOÁT KHÁCH VÃNG LAI & FOOTER */}
+      {/* FOOTER */}
       <div style={{ marginTop: '14px' }}>
-        <button
-          onClick={onContinueAsGuest}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: 'var(--wood-medium)',
-            fontSize: '12px',
-            fontWeight: 600,
-            cursor: 'pointer',
-            textDecoration: 'underline',
-          }}
-        >
-          🚶 Khách vãng lai: Tiếp tục xem bàn & menu ➔
-        </button>
-
-        <div style={{ fontSize: '10px', color: 'var(--wood-medium)', marginTop: '8px' }}>
-          🔒 Kết nối PostgreSQL Supabase • 20 chi nhánh toàn quốc
+        <div style={{ fontSize: '11px', color: 'var(--wood-medium)', marginTop: '4px', fontWeight: 500 }}>
+          Hệ thống Spicy Box • Chuỗi Buffet Tokpokki 20 chi nhánh
         </div>
       </div>
 

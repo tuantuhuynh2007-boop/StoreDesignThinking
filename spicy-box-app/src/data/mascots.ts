@@ -10,7 +10,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/halloween_gian_doi.png',
     rarity: 'COMMON',
     isUnlocked: true,
-    count: 1
+    count: 1,
+    dropRate: 5
   },
   {
     id: 'hw-2',
@@ -20,7 +21,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/halloween_chao_hoi.png',
     rarity: 'COMMON',
     isUnlocked: true,
-    count: 2
+    count: 2,
+    dropRate: 25
   },
   {
     id: 'hw-3',
@@ -30,7 +32,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/halloween_meu_mao.png',
     rarity: 'COMMON',
     isUnlocked: false,
-    count: 0
+    count: 0,
+    dropRate: 15
   },
   {
     id: 'hw-4',
@@ -40,7 +43,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/halloween_chu_mo.png',
     rarity: 'RARE',
     isUnlocked: true,
-    count: 1
+    count: 1,
+    dropRate: 15
   },
   {
     id: 'hw-5',
@@ -50,7 +54,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/halloween_ngac_nhien.png',
     rarity: 'LEGENDARY',
     isUnlocked: false,
-    count: 0
+    count: 0,
+    dropRate: 10
   },
   {
     id: 'hw-6',
@@ -60,7 +65,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/halloween_vui_ve.png',
     rarity: 'COMMON',
     isUnlocked: true,
-    count: 1
+    count: 1,
+    dropRate: 30
   },
 
   // --- CHRISTMAS ---
@@ -72,7 +78,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/christmas_gian_doi.png',
     rarity: 'COMMON',
     isUnlocked: false,
-    count: 0
+    count: 0,
+    dropRate: 5
   },
   {
     id: 'xmas-2',
@@ -82,7 +89,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/christmas_chao_hoi.png',
     rarity: 'COMMON',
     isUnlocked: true,
-    count: 1
+    count: 1,
+    dropRate: 25
   },
   {
     id: 'xmas-3',
@@ -92,7 +100,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/christmas_meu_mao.png',
     rarity: 'COMMON',
     isUnlocked: false,
-    count: 0
+    count: 0,
+    dropRate: 15
   },
   {
     id: 'xmas-4',
@@ -102,7 +111,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/christmas_chu_mo.png',
     rarity: 'RARE',
     isUnlocked: false,
-    count: 0
+    count: 0,
+    dropRate: 15
   },
   {
     id: 'xmas-5',
@@ -112,7 +122,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/christmas_ngac_nhien.png',
     rarity: 'LEGENDARY',
     isUnlocked: false,
-    count: 0
+    count: 0,
+    dropRate: 10
   },
   {
     id: 'xmas-6',
@@ -122,7 +133,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/christmas_vui_ve.png',
     rarity: 'COMMON',
     isUnlocked: true,
-    count: 1
+    count: 1,
+    dropRate: 30
   },
 
   // --- TET ---
@@ -134,7 +146,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/tet_gian_doi.png',
     rarity: 'COMMON',
     isUnlocked: false,
-    count: 0
+    count: 0,
+    dropRate: 5
   },
   {
     id: 'tet-2',
@@ -144,7 +157,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/tet_chao_hoi.png',
     rarity: 'COMMON',
     isUnlocked: true,
-    count: 1
+    count: 1,
+    dropRate: 25
   },
   {
     id: 'tet-3',
@@ -154,7 +168,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/tet_meu_mao.png',
     rarity: 'COMMON',
     isUnlocked: false,
-    count: 0
+    count: 0,
+    dropRate: 15
   },
   {
     id: 'tet-4',
@@ -164,7 +179,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/tet_chu_mo.png',
     rarity: 'RARE',
     isUnlocked: false,
-    count: 0
+    count: 0,
+    dropRate: 15
   },
   {
     id: 'tet-5',
@@ -174,7 +190,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/tet_ngac_nhien.png',
     rarity: 'LEGENDARY',
     isUnlocked: false,
-    count: 0
+    count: 0,
+    dropRate: 10
   },
   {
     id: 'tet-6',
@@ -184,7 +201,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/tet_vui_ve.png',
     rarity: 'COMMON',
     isUnlocked: true,
-    count: 2
+    count: 2,
+    dropRate: 30
   },
 
   // --- MIDAUTUMN ---
@@ -196,7 +214,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/midautumn_gian_doi.png',
     rarity: 'COMMON',
     isUnlocked: false,
-    count: 0
+    count: 0,
+    dropRate: 5
   },
   {
     id: 'ma-2',
@@ -206,7 +225,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/midautumn_chao_hoi.png',
     rarity: 'COMMON',
     isUnlocked: true,
-    count: 1
+    count: 1,
+    dropRate: 25
   },
   {
     id: 'ma-3',
@@ -216,7 +236,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/midautumn_meu_mao.png',
     rarity: 'COMMON',
     isUnlocked: false,
-    count: 0
+    count: 0,
+    dropRate: 15
   },
   {
     id: 'ma-4',
@@ -226,7 +247,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/midautumn_chu_mo.png',
     rarity: 'RARE',
     isUnlocked: false,
-    count: 0
+    count: 0,
+    dropRate: 15
   },
   {
     id: 'ma-5',
@@ -236,7 +258,8 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/midautumn_ngac_nhien.png',
     rarity: 'LEGENDARY',
     isUnlocked: false,
-    count: 0
+    count: 0,
+    dropRate: 10
   },
   {
     id: 'ma-6',
@@ -246,6 +269,7 @@ export const INITIAL_MASCOTS: Mascot[] = [
     image: '/assets/ducks/midautumn_vui_ve.png',
     rarity: 'COMMON',
     isUnlocked: true,
-    count: 1
+    count: 1,
+    dropRate: 30
   }
 ];
