@@ -87,7 +87,7 @@ export const RewardsTab: React.FC<RewardsTabProps> = ({
             </span>
           </div>
           <div style={{ fontSize: '11px', color: '#FCD34D', opacity: 0.9, marginTop: '4px' }}>
-            ✨ Mỗi lần ăn tại Spicy Box nhận ngay +50 Ớt Vàng
+            ✨ Mỗi lần ăn tại Spicy Box nhận ngay +25 Ớt Vàng
           </div>
         </div>
       ) : (
