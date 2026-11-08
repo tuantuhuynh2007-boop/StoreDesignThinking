@@ -86,3 +86,6 @@ export const SESSION_SLOTS: { label: string; emoji: string; slots: string[] }[] 
   { label: 'Buổi chiều', emoji: '🌤️', slots: ALL_SLOTS.filter(s => { const h = parseInt(s); return h >= 15 && h < 18; }) },
   { label: 'Buổi tối',   emoji: '🌙', slots: ALL_SLOTS.filter(s => { const h = parseInt(s); return h >= 18; }) },
 ];
+
+// Bàn sinh nhật: mỗi suất cách nhau 2 tiếng
+export const BIRTHDAY_SLOTS = ['10:00', '12:00', '14:00', '16:00', '18:00', '20:00'];

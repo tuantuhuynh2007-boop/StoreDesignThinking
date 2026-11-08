@@ -17,7 +17,7 @@ export const GachaTab: React.FC<GachaTabProps> = ({
   onViewAlbum,
 }) => {
   const [isOpening, setIsOpening] = useState(false);
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(3);
 
   const handleStartOpening = () => {
     if (availableBoxes <= 0) {
@@ -27,7 +27,7 @@ export const GachaTab: React.FC<GachaTabProps> = ({
     if (isOpening) return;
 
     setIsOpening(true);
-    setCountdown(5);
+    setCountdown(3);
   };
 
   useEffect(() => {

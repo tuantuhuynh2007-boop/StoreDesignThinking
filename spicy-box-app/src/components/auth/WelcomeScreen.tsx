@@ -657,26 +657,6 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
               </>
             )}
 
-            {authMethod === 'password' && (
-              <button
-                type="button"
-                onClick={() => setAuthMethod('otp')}
-                style={{
-                  width: '100%',
-                  padding: '9px',
-                  borderRadius: '10px',
-                  background: 'none',
-                  border: '1px dashed var(--wood-light)',
-                  color: 'var(--wood-dark)',
-                  fontSize: '12px',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  marginBottom: '8px',
-                }}
-              >
-                📲 Đăng nhập bằng mã OTP (Không cần mật khẩu)
-              </button>
-            )}
           </>
         )}
 

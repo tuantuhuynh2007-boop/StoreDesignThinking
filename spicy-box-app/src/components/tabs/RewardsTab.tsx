@@ -154,7 +154,7 @@ export const RewardsTab: React.FC<RewardsTabProps> = ({
         </div>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: '13px', fontWeight: 600 }}>Vòng Phô Mai Kéo Sợi</div>
-          <div style={{ fontSize: '11px', color: 'var(--wood-medium)' }}>Cần: 50 Ớt Vàng</div>
+          <div style={{ fontSize: '11px', color: 'var(--wood-medium)' }}>Cần: 150 Ớt Vàng</div>
         </div>
         <button
           style={{
@@ -165,7 +165,7 @@ export const RewardsTab: React.FC<RewardsTabProps> = ({
             fontWeight: 700,
             cursor: 'pointer',
           }}
-          onClick={() => onRedeemReward('Vòng Phô Mai Kéo Sợi', 50)}
+          onClick={() => onRedeemReward('Vòng Phô Mai Kéo Sợi', 150)}
         >
           Đổi ngay
         </button>
@@ -197,7 +197,7 @@ export const RewardsTab: React.FC<RewardsTabProps> = ({
         </div>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: '13px', fontWeight: 600 }}>Đĩa Ba Chỉ Bò Mỹ</div>
-          <div style={{ fontSize: '11px', color: 'var(--wood-medium)' }}>Cần: 35 Ớt Vàng</div>
+          <div style={{ fontSize: '11px', color: 'var(--wood-medium)' }}>Cần: 135 Ớt Vàng</div>
         </div>
         <button
           style={{
@@ -208,7 +208,7 @@ export const RewardsTab: React.FC<RewardsTabProps> = ({
             fontWeight: 700,
             cursor: 'pointer',
           }}
-          onClick={() => onRedeemReward('Đĩa Ba Chỉ Bò Mỹ', 35)}
+          onClick={() => onRedeemReward('Đĩa Ba Chỉ Bò Mỹ', 135)}
         >
           Đổi ngay
         </button>
@@ -240,7 +240,7 @@ export const RewardsTab: React.FC<RewardsTabProps> = ({
         </div>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: '13px', fontWeight: 600 }}>Giảm 50.000đ Vé Buffet</div>
-          <div style={{ fontSize: '11px', color: 'var(--wood-medium)' }}>Cần: 70 Ớt Vàng</div>
+          <div style={{ fontSize: '11px', color: 'var(--wood-medium)' }}>Cần: 170 Ớt Vàng</div>
         </div>
         <button
           style={{
@@ -251,7 +251,7 @@ export const RewardsTab: React.FC<RewardsTabProps> = ({
             fontWeight: 700,
             cursor: 'pointer',
           }}
-          onClick={() => onRedeemReward('Giảm 50k Vé Buffet', 70)}
+          onClick={() => onRedeemReward('Giảm 50k Vé Buffet', 170)}
         >
           Đổi ngay
         </button>
