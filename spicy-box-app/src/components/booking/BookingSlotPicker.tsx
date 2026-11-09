@@ -6,7 +6,7 @@ import {
   type BookingSlotMetric,
   type BookingTableType,
 } from '../../bookingSlots';
-import { SESSION_SLOTS } from '../../data/constants';
+import { SESSION_SLOTS, BIRTHDAY_SLOTS, getBirthdayEndTime } from '../../data/constants';
 
 interface BookingSlotPickerProps {
   tableType: BookingTableType;
@@ -29,6 +29,109 @@ const STATE_LABELS = {
   full: 'Hết chỗ',
 } as const;
 
+function SlotButton({
+  timeSlot,
+  metric,
+  tableType,
+  capacity,
+  selectedSlot,
+  claimingSlot,
+  loadError,
+  isLoading,
+  onSelectSlot,
+  isBirthday,
+}: {
+  timeSlot: string;
+  metric: BookingSlotMetric;
+  tableType: BookingTableType;
+  capacity: number;
+  selectedSlot: string | null;
+  claimingSlot: string | null;
+  loadError: string | null;
+  isLoading: boolean;
+  onSelectSlot: (t: string) => void;
+  isBirthday: boolean;
+}) {
+  const state = getBookingSlotState(metric, tableType);
+  const isSelected = selectedSlot === timeSlot;
+  const isClaiming = claimingSlot === timeSlot;
+  const isUnavailable = Boolean(loadError) || isLoading;
+  const visualState = isUnavailable ? 'unavailable' : isSelected ? 'processing' : state;
+  const disabled = isUnavailable || Boolean(claimingSlot) || (state !== 'available' && !isSelected);
+  const remaining = getRemainingTables(metric, tableType);
+  const endTime = isBirthday ? getBirthdayEndTime(timeSlot) : '';
+
+  return (
+    <button
+      type="button"
+      className={`booking-slot is-${visualState}${isSelected ? ' is-selected' : ''}`}
+      disabled={disabled}
+      aria-pressed={isSelected}
+      onClick={() => onSelectSlot(timeSlot)}
+    >
+      <span className="booking-slot__top">
+        <strong>
+          <AlarmClock size={15} aria-hidden="true" />{' '}
+          {isBirthday ? `${timeSlot} – ${endTime}` : timeSlot}
+        </strong>
+        <em>
+          {isClaiming && <Loader2 size={13} className="animate-spin" aria-hidden="true" />}
+          {isUnavailable
+            ? isLoading ? 'Đang tải…' : 'Chưa tải'
+            : isClaiming
+            ? 'Đang giữ…'
+            : isSelected
+            ? 'Bạn đang giữ'
+            : isBirthday && state === 'full'
+            ? '✕ Hết suất'
+            : STATE_LABELS[state]}
+        </em>
+      </span>
+      <span className="booking-slot__bottom">
+        {isBirthday ? (
+          <>
+            <b>{isUnavailable ? '–/1 suất' : `${metric.confirmedTables}/1 suất`}</b>
+            <span>
+              {isUnavailable
+                ? 'Chưa có dữ liệu'
+                : metric.confirmedTables >= 1
+                ? `Đã nhận tiệc (${metric.bookedGuests} khách)`
+                : 'Chưa có tiệc đặt'}
+            </span>
+            <small>
+              {isUnavailable
+                ? 'Tạm khóa chọn giờ'
+                : isSelected
+                ? `Đang giữ ca ${timeSlot} – ${endTime} (2 tiếng)`
+                : state === 'available'
+                ? `Trọn gói 2 tiếng (trống đến ${endTime})`
+                : state === 'processing'
+                ? 'Đang có khách giữ chỗ'
+                : `Bận đến ${endTime} · Trống lúc ${endTime}`}
+            </small>
+          </>
+        ) : (
+          <>
+            <b>{isUnavailable ? '–/– bàn' : `${metric.confirmedTables}/${capacity} bàn`}</b>
+            <span>{isUnavailable ? 'Chưa có dữ liệu' : `${metric.bookedGuests} người đã đặt`}</span>
+            <small>
+              {isUnavailable
+                ? 'Tạm khóa chọn giờ'
+                : isSelected
+                ? 'Giữ trong 10 phút'
+                : state === 'available'
+                ? `Còn ${remaining} bàn`
+                : state === 'processing'
+                ? 'Đang chờ xác nhận'
+                : 'Đã đủ sức chứa'}
+            </small>
+          </>
+        )}
+      </span>
+    </button>
+  );
+}
+
 export function BookingSlotPicker({
   tableType,
   partySize,
@@ -46,13 +149,31 @@ export function BookingSlotPicker({
   const metricByTime = new Map(metrics.map(metric => [metric.time, metric]));
   const capacity = BOOKING_SLOT_CAPACITY[tableType];
   const partySizes = tableType === 'standard' ? [1, 2, 3, 4] : [8, 9, 10, 11, 12];
+  const isBirthday = tableType === 'birthday';
+
+  const slotProps = (timeSlot: string) => ({
+    timeSlot,
+    metric: metricByTime.get(timeSlot) ?? { time: timeSlot, confirmedTables: 0, bookedGuests: 0, activeHolds: 0 },
+    tableType,
+    capacity,
+    selectedSlot,
+    claimingSlot,
+    loadError,
+    isLoading,
+    onSelectSlot,
+    isBirthday,
+  });
 
   return (
     <section className="booking-realtime" aria-labelledby="booking-realtime-title">
       <div className="booking-realtime__header">
         <div>
           <h2 id="booking-realtime-title">Spicy Box · Đặt bàn Realtime</h2>
-          <p>Tối đa {capacity} bàn online mỗi khung giờ</p>
+          <p>
+            {isBirthday
+              ? 'Bàn sinh nhật trung tâm · Duy nhất 1 suất mỗi ca 2 tiếng'
+              : `Tối đa ${capacity} bàn online mỗi khung giờ`}
+          </p>
         </div>
         <span className="booking-realtime__live">
           <Circle size={9} fill="currentColor" aria-hidden="true" /> Realtime
@@ -78,17 +199,17 @@ export function BookingSlotPicker({
         >
           <span><CakeSlice size={16} aria-hidden="true" /> Bàn sinh nhật</span>
           <strong>8–12 người · Trung tâm quán</strong>
-          <em>1 suất</em>
+          <em>1 suất / 2 tiếng</em>
         </button>
       </div>
 
-      <div className={`booking-party-size${tableType === 'birthday' ? ' is-birthday' : ''}`}>
+      <div className={`booking-party-size${isBirthday ? ' is-birthday' : ''}`}>
         <div className="booking-party-size__title">
-          <span>{tableType === 'standard' ? 'Chọn số lượng người' : 'Bàn sinh nhật · Trung tâm quán'}</span>
-          <strong>{tableType === 'standard' ? 'Tối đa 4 người' : 'Chọn 8–12 khách'}</strong>
+          <span>{isBirthday ? 'Bàn sinh nhật · Trung tâm quán' : 'Chọn số lượng người'}</span>
+          <strong>{isBirthday ? 'Chọn 8–12 khách' : 'Tối đa 4 người'}</strong>
         </div>
-        {tableType === 'birthday' && (
-          <p>Bàn tiệc trang trí đẹp nhất, nhận đúng một suất trong mỗi khung giờ.</p>
+        {isBirthday && (
+          <p>Bàn tiệc trang trí đẹp nhất quán, mỗi ca cố định 2 tiếng để trang trí và dùng bữa.</p>
         )}
         <div className="booking-party-size__options">
           {partySizes.map(size => (
@@ -104,28 +225,30 @@ export function BookingSlotPicker({
             </button>
           ))}
         </div>
-        {tableType === 'birthday' && (
+        {isBirthday && (
           <div className="booking-party-size__gift">
-            Tặng vòng phô mai kéo sợi, trang trí nền tiệc và nhạc Happy Birthday.
+            🎁 Tặng vòng phô mai kéo sợi, trang trí nón tiệc và bật nhạc Happy Birthday.
           </div>
         )}
       </div>
 
       <div className="booking-selection-note">
         {selectedSlot
-          ? `Đang giữ bàn ${tableType === 'birthday' ? 'sinh nhật' : 'tiêu chuẩn'} lúc ${selectedSlot} cho ${partySize} người trong 10 phút.`
-          : `Đã chọn bàn ${tableType === 'birthday' ? 'sinh nhật' : 'tiêu chuẩn'} cho ${partySize} người.`}
+          ? isBirthday
+            ? `Đang giữ bàn sinh nhật ca ${selectedSlot} – ${getBirthdayEndTime(selectedSlot)} (trọn vẹn 2 tiếng) cho ${partySize} khách.`
+            : `Đang giữ bàn tiêu chuẩn lúc ${selectedSlot} cho ${partySize} người trong 10 phút.`
+          : `Đã chọn bàn ${isBirthday ? 'sinh nhật' : 'tiêu chuẩn'} cho ${partySize} người.`}
       </div>
 
       <div className="booking-state-legend" aria-label="Trạng thái khung giờ">
-        <div className="is-available"><strong><Circle size={10} fill="currentColor" /> Còn trống</strong><span>Có thể chọn giờ</span></div>
-        <div className="is-processing"><strong><Circle size={10} fill="currentColor" /> Đang xử lý</strong><span>Đang được giữ</span></div>
-        <div className="is-full"><strong><Circle size={10} fill="currentColor" /> Hết chỗ</strong><span>Không thể chọn</span></div>
+        <div className="is-available"><strong><Circle size={10} fill="currentColor" /> Còn trống</strong><span>Có thể chọn ca</span></div>
+        <div className="is-processing"><strong><Circle size={10} fill="currentColor" /> Đang xử lý</strong><span>Đang được giữ chỗ</span></div>
+        <div className="is-full"><strong><Circle size={10} fill="currentColor" /> Hết chỗ</strong><span>Đã có tiệc đặt</span></div>
       </div>
 
       <div className="booking-slot-heading">
         <strong>Khung giờ đặt bàn</strong>
-        <span>Tối đa {capacity} bàn</span>
+        <span>{isBirthday ? '1 suất duy nhất · Cách nhau 2 tiếng' : `Tối đa ${capacity} bàn`}</span>
       </div>
 
       {actionError && (
@@ -141,64 +264,35 @@ export function BookingSlotPicker({
         </div>
       )}
 
-      {SESSION_SLOTS.map(session => (
-        <div className="booking-slot-session" key={session.label}>
-          <h3>{session.label}</h3>
+      {isBirthday ? (
+        <div className="booking-slot-session">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+            <h3>🎂 Khung giờ tiệc sinh nhật (Trọn gói 2 tiếng/ca)</h3>
+            <span style={{ fontSize: '11px', fontWeight: 700, color: '#B45309', background: '#FEF3C7', padding: '2px 8px', borderRadius: '999px' }}>
+              Mỗi ca cách nhau 2 tiếng
+            </span>
+          </div>
+          <div style={{ fontSize: '12px', color: '#92400E', background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: '12px', padding: '10px 14px', marginBottom: '12px', lineHeight: 1.5 }}>
+            ⏰ <strong>Quy định phục vụ bàn sinh nhật VIP:</strong> Mỗi ca đặt trọn gói 2 tiếng (09:00–11:00, 11:00–13:00,...). Khi có khách đặt ca <strong>09:00</strong> thì bàn phục vụ đến <strong>11:00</strong> mới trống để đón ca tiếp theo.
+          </div>
           <div className="booking-slot-grid">
-            {session.slots.map(timeSlot => {
-              const metric = metricByTime.get(timeSlot) ?? {
-                time: timeSlot,
-                confirmedTables: 0,
-                bookedGuests: 0,
-                activeHolds: 0,
-              };
-              const state = getBookingSlotState(metric, tableType);
-              const isSelected = selectedSlot === timeSlot;
-              const isClaiming = claimingSlot === timeSlot;
-              const isUnavailable = Boolean(loadError) || isLoading;
-              const visualState = isUnavailable ? 'unavailable' : isSelected ? 'processing' : state;
-              const disabled = isUnavailable || Boolean(claimingSlot) || (state !== 'available' && !isSelected);
-              const remaining = getRemainingTables(metric, tableType);
-
-              return (
-                <button
-                  type="button"
-                  key={timeSlot}
-                  className={`booking-slot is-${visualState}${isSelected ? ' is-selected' : ''}`}
-                  disabled={disabled}
-                  aria-pressed={isSelected}
-                  onClick={() => onSelectSlot(timeSlot)}
-                >
-                  <span className="booking-slot__top">
-                    <strong><AlarmClock size={15} aria-hidden="true" /> {timeSlot}</strong>
-                    <em>
-                      {isClaiming && <Loader2 size={13} className="animate-spin" aria-hidden="true" />}
-                      {isUnavailable
-                        ? isLoading ? 'Đang tải…' : 'Chưa tải'
-                        : isClaiming ? 'Đang giữ…' : isSelected ? 'Bạn đang giữ' : STATE_LABELS[state]}
-                    </em>
-                  </span>
-                  <span className="booking-slot__bottom">
-                    <b>{isUnavailable ? '–/– bàn' : `${metric.confirmedTables}/${capacity} bàn`}</b>
-                    <span>{isUnavailable ? 'Chưa có dữ liệu' : `${metric.bookedGuests} người đã đặt`}</span>
-                    <small>
-                      {isUnavailable
-                        ? 'Tạm khóa chọn giờ'
-                        : isSelected
-                        ? 'Giữ trong 10 phút'
-                        : state === 'available'
-                          ? `Còn ${remaining} bàn`
-                          : state === 'processing'
-                            ? 'Đang chờ xác nhận'
-                            : 'Đã đủ sức chứa'}
-                    </small>
-                  </span>
-                </button>
-              );
-            })}
+            {BIRTHDAY_SLOTS.map(timeSlot => (
+              <SlotButton key={timeSlot} {...slotProps(timeSlot)} />
+            ))}
           </div>
         </div>
-      ))}
+      ) : (
+        SESSION_SLOTS.map(session => (
+          <div className="booking-slot-session" key={session.label}>
+            <h3>{session.label}</h3>
+            <div className="booking-slot-grid">
+              {session.slots.map(timeSlot => (
+                <SlotButton key={timeSlot} {...slotProps(timeSlot)} />
+              ))}
+            </div>
+          </div>
+        ))
+      )}
     </section>
   );
 }

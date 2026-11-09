@@ -15,7 +15,7 @@ export const BRANCHES: Branch[] = [
   // --- HÀ NỘI & HẢI PHÒNG (MIỀN BẮC) ---
   { id: 'lottewestlake', name: 'Spicy Box Lotte Mall Tây Hồ', mall: 'Tầng 3, Lotte Mall West Lake', address: '272 Võ Chí Công, P. Phú Thượng, Q. Tây Hồ', city: 'Hà Nội', region: 'Miền Bắc', hotline: '024 3333 8899' },
   { id: 'aeonhadong', name: 'Spicy Box AEON Mall Hà Đông', mall: 'Tầng 2, AEON Mall Hà Đông', address: 'Khu dân cư Hoàng Văn Thụ, P. Dương Nội, Q. Hà Đông', city: 'Hà Nội', region: 'Miền Bắc', hotline: '024 3765 4422' },
-  { id: 'aeonlechan', name: 'Spicy Box AEON Mall Lê Chân', mall: 'Tầng 1, AEON Mall Hải Phòng Lê Chân', address: '10 Võ Nguyên Giáp, P. Kênh Dương, Q. Lê Chân', city: 'Hải Phòng', region: 'Miền Bắc', hotline: '0225 355 6688' },
+  { id: 'aeonlechan', name: 'Spicy Box AEON Mall Hải Phòng Lê Chân', mall: 'Tầng 1, AEON Mall Hải Phòng Lê Chân', address: '10 Võ Nguyên Giáp, P. Kênh Dương, Q. Lê Chân', city: 'Hải Phòng', region: 'Miền Bắc', hotline: '0225 355 6688' },
 
   // --- ĐÀ NẴNG, HUẾ & NHA TRANG (MIỀN TRUNG) ---
   { id: 'aeondanang', name: 'Spicy Box AEON Mall Thanh Khê', mall: 'Tầng 3, AEON Mall Thanh Khê', address: '46 Điện Biên Phủ, P. Chính Gián, Q. Thanh Khê', city: 'Đà Nẵng', region: 'Miền Trung', hotline: '0236 388 9922' },
@@ -87,5 +87,11 @@ export const SESSION_SLOTS: { label: string; emoji: string; slots: string[] }[] 
   { label: 'Buổi tối',   emoji: '🌙', slots: ALL_SLOTS.filter(s => { const h = parseInt(s); return h >= 18; }) },
 ];
 
-// Bàn sinh nhật: mỗi suất cách nhau 2 tiếng
-export const BIRTHDAY_SLOTS = ['10:00', '12:00', '14:00', '16:00', '18:00', '20:00'];
+// Bàn sinh nhật: mỗi suất kéo dài 2 tiếng, bắt đầu từ 09:00 (09:00 - 11:00, 11:00 - 13:00,...)
+export const BIRTHDAY_SLOTS = ['09:00', '11:00', '13:00', '15:00', '17:00', '19:00', '21:00'];
+
+export function getBirthdayEndTime(slot: string): string {
+  const [h, m] = slot.split(':').map(Number);
+  const endH = h + 2;
+  return `${endH < 10 ? '0' : ''}${endH}:${m < 10 ? '0' : ''}${m || 0}`;
+}

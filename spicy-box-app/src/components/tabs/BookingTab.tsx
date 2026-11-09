@@ -10,6 +10,7 @@ import {
   PAYMENT_METHODS,
   SPICY_LEVELS,
   DATES,
+  getBirthdayEndTime,
 } from '../../data/constants';
 
 interface BookingTabProps {
@@ -713,7 +714,7 @@ export const BookingTab: React.FC<BookingTabProps> = ({
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span>Thời gian ăn lẩu:</span>
                 <strong style={{ color: 'var(--wood-dark)' }}>
-                  {selectedSlot} • {DATES.find(d => d.key === selectedDate)?.label} (
+                  {tableType === 'birthday' && selectedSlot ? `${selectedSlot} – ${getBirthdayEndTime(selectedSlot)} (Ca 2 tiếng)` : selectedSlot} • {DATES.find(d => d.key === selectedDate)?.label} (
                   {DATES.find(d => d.key === selectedDate)?.day})
                 </strong>
               </div>
@@ -1137,7 +1138,7 @@ export const BookingTab: React.FC<BookingTabProps> = ({
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
               <span style={{ color: 'var(--wood-medium)' }}>Thời gian:</span>
               <strong style={{ color: 'var(--wood-dark)' }}>
-                {selectedSlot} • {DATES.find(d => d.key === selectedDate)?.label} (
+                {tableType === 'birthday' && selectedSlot ? `${selectedSlot} – ${getBirthdayEndTime(selectedSlot)} (Ca 2 tiếng)` : selectedSlot} • {DATES.find(d => d.key === selectedDate)?.label} (
                 {DATES.find(d => d.key === selectedDate)?.day})
               </strong>
             </div>
