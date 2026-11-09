@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Calendar, Gift, BookOpen, Ticket } from 'lucide-react';
+import { Home, Calendar, UtensilsCrossed, BookOpen, Ticket } from 'lucide-react';
 import type { ActiveTab } from '../../types';
 
 interface BottomNavProps {
@@ -25,11 +25,11 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) 
         <span>Đặt bàn</span>
       </button>
       <button
-        className={`nav-btn ${activeTab === 'gacha' ? 'active' : ''}`}
-        onClick={() => onTabChange('gacha')}
+        className={`nav-btn ${activeTab === 'menu' ? 'active' : ''}`}
+        onClick={() => onTabChange('menu')}
       >
-        <Gift size={20} />
-        <span>Blind Box</span>
+        <UtensilsCrossed size={20} />
+        <span>Danh mục</span>
       </button>
       <button
         className={`nav-btn ${activeTab === 'album' ? 'active' : ''}`}

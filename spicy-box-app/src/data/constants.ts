@@ -45,7 +45,7 @@ export const CITIES = [
   'Cần Thơ'
 ] as const;
 
-export const ADULT_PRICE = 129000;
+export const ADULT_PRICE = 139000;
 export const CHILD_PRICE = 79000;
 
 export const PAYMENT_METHODS = [

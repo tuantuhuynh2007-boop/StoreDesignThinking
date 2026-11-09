@@ -59,4 +59,4 @@ export interface UserProfile {
   bookingCount?: number; // Số lần đã đặt bàn tại Spicy Box
 }
 
-export type ActiveTab = 'home' | 'booking' | 'gacha' | 'album' | 'rewards';
+export type ActiveTab = 'home' | 'booking' | 'menu' | 'album' | 'rewards';

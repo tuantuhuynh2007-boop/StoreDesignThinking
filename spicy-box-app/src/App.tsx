@@ -14,7 +14,7 @@ import { AuthModal } from './components/auth/AuthModal';
 // Tabs
 import { HomeTab } from './components/tabs/HomeTab';
 import { BookingTab } from './components/tabs/BookingTab';
-import { GachaTab } from './components/tabs/GachaTab';
+import { MenuTab } from './components/tabs/MenuTab';
 import { AlbumTab } from './components/tabs/AlbumTab';
 import { RewardsTab } from './components/tabs/RewardsTab';
 
@@ -30,9 +30,7 @@ export function App() {
     return saved ? parseInt(saved, 10) : null;
   });
 
-  const [availableBoxes, setAvailableBoxes] = useState(2);
-  const [mascots, setMascots] = useState<Mascot[]>(INITIAL_MASCOTS);
-  const [unlockedDuck, setUnlockedDuck] = useState<Mascot | null>(null);
+  const [mascots] = useState<Mascot[]>(INITIAL_MASCOTS);
 
   // User Authentication state
   const [user, setUser] = useState<UserProfile | null>(() => {
@@ -116,47 +114,6 @@ export function App() {
     }
   };
 
-  const handleOpenBox = () => {
-    if (availableBoxes <= 0) {
-      alert('Bạn đã hết lượt mở hộp! Hãy dùng bữa tại Spicy Box để nhận thêm lượt nhé.');
-      return;
-    }
-    setAvailableBoxes(prev => prev - 1);
-
-    const seasonMascots = mascots.filter(m => m.season === currentSeason);
-
-    // Tính toán mở quà ngẫu nhiên theo tỷ lệ % dropRate thực tế (Tổng = 100%)
-    // Vd: Giận Dỗi 5%, Ngạc Nhiên 10%, Chu Mỏ 15%, Mếu Máo 15%, Chào Hỏi 25%, Vui Vẻ 30%
-    const rand = Math.random() * 100;
-    let accumulated = 0;
-    let selectedDuck = seasonMascots[0];
-
-    for (const duck of seasonMascots) {
-      accumulated += duck.dropRate || 16.66;
-      if (rand <= accumulated) {
-        selectedDuck = duck;
-        break;
-      }
-    }
-
-    // Tăng count (hỗ trợ trùng lặp nhiều con cùng loại)
-    setMascots(prev =>
-      prev.map(m => {
-        if (m.id === selectedDuck.id) {
-          const updatedCount = m.count + 1;
-          return { ...m, isUnlocked: true, count: updatedCount };
-        }
-        return m;
-      })
-    );
-
-    setUnlockedDuck({
-      ...selectedDuck,
-      isUnlocked: true,
-      count: selectedDuck.count + 1,
-    });
-  };
-
   const handleRedeem = (title: string, cost: number) => {
     if (points < cost) {
       alert('Bạn không đủ Ớt Vàng để đổi ưu đãi này!');
@@ -208,12 +165,11 @@ export function App() {
               <BookingTab
                 selectedBranch={selectedBranch}
                 onOpenBranchModal={() => setShowBranchModal(true)}
-                onBookingComplete={(pointsEarned, boxesEarned, assignedNum) => {
+                onBookingComplete={(pointsEarned, _boxesEarned, assignedNum) => {
                   setPoints(prev => {
                     const newPoints = prev + pointsEarned;
                     return newPoints;
                   });
-                  setAvailableBoxes(prev => prev + boxesEarned);
                   setMyNum(assignedNum);
                   localStorage.setItem('spicy_box_my_queue', assignedNum.toString());
 
@@ -243,17 +199,8 @@ export function App() {
               />
             )}
 
-            {activeTab === 'gacha' && (
-              <GachaTab
-                availableBoxes={availableBoxes}
-                onOpenBox={handleOpenBox}
-                unlockedDuck={unlockedDuck}
-                onCloseDuckModal={() => setUnlockedDuck(null)}
-                onViewAlbum={() => {
-                  setUnlockedDuck(null);
-                  setActiveTab('album');
-                }}
-              />
+            {activeTab === 'menu' && (
+              <MenuTab onNavigateTab={tab => setActiveTab(tab)} />
             )}
 
             {activeTab === 'album' && (

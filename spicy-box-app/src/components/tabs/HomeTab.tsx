@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Gift, BookOpen, Ticket, CheckCircle, MapPin, Store } from 'lucide-react';
+import { Calendar, UtensilsCrossed, BookOpen, Ticket, CheckCircle, MapPin, Store } from 'lucide-react';
 import type { Branch, Season, ActiveTab } from '../../types';
 
 interface HomeTabProps {
@@ -264,7 +264,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
         <div
           className="card-box"
           style={{ padding: '16px', cursor: 'pointer', margin: 0 }}
-          onClick={() => onNavigateTab('gacha')}
+          onClick={() => onNavigateTab('menu')}
         >
           <div
             style={{
@@ -279,10 +279,10 @@ export const HomeTab: React.FC<HomeTabProps> = ({
               marginBottom: 8,
             }}
           >
-            <Gift size={20} />
+            <UtensilsCrossed size={20} />
           </div>
-          <div style={{ fontSize: '14px', fontWeight: 700 }}>Mở Blind Box</div>
-          <div style={{ fontSize: '12px', color: 'var(--wood-medium)' }}>Săn Vịt Vàng 3D</div>
+          <div style={{ fontSize: '14px', fontWeight: 700 }}>Danh mục món</div>
+          <div style={{ fontSize: '12px', color: 'var(--wood-medium)' }}>Khám phá Buffet</div>
         </div>
 
         <div

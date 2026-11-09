@@ -8,7 +8,6 @@ import {
   ADULT_PRICE,
   CHILD_PRICE,
   PAYMENT_METHODS,
-  SPICY_LEVELS,
   DATES,
   getBirthdayEndTime,
 } from '../../data/constants';
@@ -31,7 +30,6 @@ export const BookingTab: React.FC<BookingTabProps> = ({
   const [tableType, setTableType] = useState<BookingTableType>('standard');
   const [adultCount, setAdultCount] = useState(2);
   const [childCount, setChildCount] = useState(0);
-  const [spicyLevel, setSpicyLevel] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string>('vietqr');
   const [isProcessing, setIsProcessing] = useState(false);
   const [bookingCode, setBookingCode] = useState('SPB-88392');
@@ -393,6 +391,9 @@ export const BookingTab: React.FC<BookingTabProps> = ({
                 <div style={{ fontSize: '12px', color: 'var(--red-primary)', fontWeight: 600 }}>
                   {ADULT_PRICE.toLocaleString('vi-VN')} đ / vé
                 </div>
+                <div style={{ fontSize: '10px', color: 'var(--wood-medium)', marginTop: '2px' }}>
+                  * Giá chưa bao gồm thuế VAT
+                </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                 <button
@@ -513,62 +514,6 @@ export const BookingTab: React.FC<BookingTabProps> = ({
             </div>
           </div>
 
-          <div className="card-box">
-            {/* 4. Vị cay */}
-            <label
-              style={{
-                fontSize: '13px',
-                fontWeight: 600,
-                display: 'block',
-                marginBottom: '12px',
-                color: 'var(--wood-dark)',
-              }}
-            >
-              4. Vị sốt lẩu ưu tiên
-            </label>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {SPICY_LEVELS.map(level => (
-                <button
-                  key={level.key}
-                  onClick={() => setSpicyLevel(level.key)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '12px 16px',
-                    borderRadius: '14px',
-                    border: 'none',
-                    cursor: 'pointer',
-                    background: spicyLevel === level.key ? 'var(--red-light)' : 'var(--bg-surface-subtle)',
-                    outline: spicyLevel === level.key ? '2px solid var(--red-primary)' : '2px solid transparent',
-                    transition: 'all 0.18s',
-                    textAlign: 'left',
-                  }}
-                >
-                  <div>
-                    <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--wood-dark)' }}>
-                      {level.label}
-                    </div>
-                    <div style={{ fontSize: '11px', color: 'var(--wood-medium)', marginTop: '2px' }}>
-                      {level.desc}
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      width: 20,
-                      height: 20,
-                      borderRadius: '50%',
-                      border: `2px solid ${spicyLevel === level.key ? 'var(--red-primary)' : 'var(--wood-light)'}`,
-                      background: spicyLevel === level.key ? 'var(--red-primary)' : 'transparent',
-                      transition: 'all 0.18s',
-                      flexShrink: 0,
-                    }}
-                  />
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* Box tạm tính tiền */}
           <div
             style={{
@@ -630,10 +575,7 @@ export const BookingTab: React.FC<BookingTabProps> = ({
                 alert('Vui lòng chọn khung giờ đến!');
                 return;
               }
-              if (!spicyLevel) {
-                alert('Vui lòng chọn vị sốt lẩu!');
-                return;
-              }
+              
               setBookingStep('payment');
             }}
           >
@@ -718,15 +660,10 @@ export const BookingTab: React.FC<BookingTabProps> = ({
                   {DATES.find(d => d.key === selectedDate)?.day})
                 </strong>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span>Vị sốt lẩu:</span>
-                <strong style={{ color: 'var(--wood-dark)' }}>
-                  {SPICY_LEVELS.find(s => s.key === spicyLevel)?.label}
-                </strong>
-              </div>
+              
               <div style={{ height: 1, background: 'var(--wood-tint)', margin: '4px 0' }}></div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span>{adultCount}x Vé Người lớn (129k):</span>
+                <span>{adultCount}x Vé Người lớn (139k)*:</span>
                 <span style={{ color: 'var(--wood-dark)', fontWeight: 600 }}>
                   {(adultCount * ADULT_PRICE).toLocaleString('vi-VN')} đ
                 </span>
@@ -1148,12 +1085,7 @@ export const BookingTab: React.FC<BookingTabProps> = ({
                 {adultCount} Lớn{childCount > 0 ? `, ${childCount} Trẻ em` : ''}
               </strong>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-              <span style={{ color: 'var(--wood-medium)' }}>Vị sốt:</span>
-              <strong style={{ color: 'var(--wood-dark)' }}>
-                {SPICY_LEVELS.find(s => s.key === spicyLevel)?.label}
-              </strong>
-            </div>
+
             <div style={{ height: 1, background: 'var(--wood-tint)', margin: '6px 0' }}></div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ color: 'var(--wood-medium)' }}>Tổng tiền đã thanh toán:</span>
@@ -1184,15 +1116,14 @@ export const BookingTab: React.FC<BookingTabProps> = ({
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <button className="btn-pill btn-gold" onClick={() => onNavigateTab('gacha')}>
-              <Sparkles size={16} /> Mở Hộp Blind Box Vịt Vàng ngay
+            <button className="btn-pill btn-gold" onClick={() => onNavigateTab('menu')}>
+              <Sparkles size={16} /> Khám phá Danh mục món ăn Buffet
             </button>
             <button
               className="btn-pill btn-outline"
               onClick={() => {
                 setBookingStep('form');
                 void releaseSelection();
-                setSpicyLevel(null);
                 setBookingCode(`SPB-${Math.floor(10000 + Math.random() * 90000)}`);
               }}
             >
