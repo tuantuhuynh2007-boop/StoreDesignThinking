@@ -245,15 +245,6 @@ export function BookingSlotPicker({
         <div className="is-full"><strong><Circle size={10} fill="currentColor" /> Hết chỗ</strong><span>Đã kín chỗ ca này</span></div>
       </div>
 
-      <div className="booking-slot-heading">
-        <strong>Khung giờ các ca đặt bàn (Cách nhau 2 tiếng)</strong>
-        <span>{isBirthday ? '1 suất duy nhất' : `Tối đa ${capacity} bàn / ca`}</span>
-      </div>
-
-      <div style={{ fontSize: '12px', color: '#92400E', background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: '12px', padding: '10px 14px', marginBottom: '14px', lineHeight: 1.5 }}>
-        ⏰ <strong>Quy định ca phục vụ:</strong> Mỗi ca đặt trọn gói 2 tiếng (09:00–11:00, 11:00–13:00,...). Khi có khách dùng bữa lúc <strong>09:00</strong> thì bàn phục vụ đến <strong>11:00</strong> mới trống để đón lượt khách ca tiếp theo.
-      </div>
-
       {actionError && (
         <div className="booking-slot-error is-action" role="alert">
           <span>{actionError}</span>
@@ -268,10 +259,7 @@ export function BookingSlotPicker({
       )}
 
       {isBirthday ? (
-        <div className="booking-slot-session">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-            <h3>🎂 Khung giờ tiệc sinh nhật (1 suất duy nhất / ca 2 tiếng)</h3>
-          </div>
+        <div className="booking-slot-session" style={{ marginTop: '14px' }}>
           <div className="booking-slot-grid">
             {BIRTHDAY_SLOTS.map(timeSlot => (
               <SlotButton key={timeSlot} {...slotProps(timeSlot)} />
