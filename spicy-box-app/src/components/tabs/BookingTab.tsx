@@ -714,7 +714,7 @@ export const BookingTab: React.FC<BookingTabProps> = ({
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span>Thời gian ăn lẩu:</span>
                 <strong style={{ color: 'var(--wood-dark)' }}>
-                  {tableType === 'birthday' && selectedSlot ? `${selectedSlot} – ${getBirthdayEndTime(selectedSlot)} (Ca 2 tiếng)` : selectedSlot} • {DATES.find(d => d.key === selectedDate)?.label} (
+                  {selectedSlot ? `${selectedSlot} – ${getBirthdayEndTime(selectedSlot)} (Ca 2 tiếng)` : ''} • {DATES.find(d => d.key === selectedDate)?.label} (
                   {DATES.find(d => d.key === selectedDate)?.day})
                 </strong>
               </div>
@@ -1138,7 +1138,7 @@ export const BookingTab: React.FC<BookingTabProps> = ({
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
               <span style={{ color: 'var(--wood-medium)' }}>Thời gian:</span>
               <strong style={{ color: 'var(--wood-dark)' }}>
-                {tableType === 'birthday' && selectedSlot ? `${selectedSlot} – ${getBirthdayEndTime(selectedSlot)} (Ca 2 tiếng)` : selectedSlot} • {DATES.find(d => d.key === selectedDate)?.label} (
+                {selectedSlot ? `${selectedSlot} – ${getBirthdayEndTime(selectedSlot)} (Ca 2 tiếng)` : ''} • {DATES.find(d => d.key === selectedDate)?.label} (
                 {DATES.find(d => d.key === selectedDate)?.day})
               </strong>
             </div>

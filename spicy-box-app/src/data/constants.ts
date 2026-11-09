@@ -72,26 +72,33 @@ export const DATES = Array.from({ length: 5 }, (_, i) => {
   };
 });
 
+// Khung giờ các ca ăn lẩu cách nhau 2 tiếng: 09:00 - 11:00, 11:00 - 13:00,...
 export const ALL_SLOTS = [
-  '09:30','10:00','10:30','11:00','11:30',
-  '12:00','12:30','13:00','13:30','14:00','14:30',
-  '15:00','15:30','16:00','16:30','17:00','17:30',
-  '18:00','18:30','19:00','19:30','20:00','20:30',
-  '21:00','21:30','22:00',
+  '09:00',
+  '11:00',
+  '13:00',
+  '15:00',
+  '17:00',
+  '19:00',
+  '21:00',
 ];
 
+// Phân ca theo buổi (mỗi ca trọn gói 2 tiếng)
 export const SESSION_SLOTS: { label: string; emoji: string; slots: string[] }[] = [
-  { label: 'Buổi sáng', emoji: '🌅', slots: ALL_SLOTS.filter(s => { const h = parseInt(s); return h >= 9 && h < 12; }) },
-  { label: 'Buổi trưa',  emoji: '☀️',  slots: ALL_SLOTS.filter(s => { const h = parseInt(s); return h >= 12 && h < 15; }) },
-  { label: 'Buổi chiều', emoji: '🌤️', slots: ALL_SLOTS.filter(s => { const h = parseInt(s); return h >= 15 && h < 18; }) },
-  { label: 'Buổi tối',   emoji: '🌙', slots: ALL_SLOTS.filter(s => { const h = parseInt(s); return h >= 18; }) },
+  { label: 'Buổi sáng (09:00 – 11:00)', emoji: '🌅', slots: ['09:00'] },
+  { label: 'Buổi trưa (11:00 – 15:00)', emoji: '☀️',  slots: ['11:00', '13:00'] },
+  { label: 'Buổi chiều (15:00 – 17:00)', emoji: '🌤️', slots: ['15:00'] },
+  { label: 'Buổi tối (17:00 – 23:00)',   emoji: '🌙', slots: ['17:00', '19:00', '21:00'] },
 ];
 
 // Bàn sinh nhật: mỗi suất kéo dài 2 tiếng, bắt đầu từ 09:00 (09:00 - 11:00, 11:00 - 13:00,...)
 export const BIRTHDAY_SLOTS = ['09:00', '11:00', '13:00', '15:00', '17:00', '19:00', '21:00'];
 
-export function getBirthdayEndTime(slot: string): string {
+// Hàm tính mốc kết thúc ca sau 2 tiếng
+export function getSlotEndTime(slot: string): string {
   const [h, m] = slot.split(':').map(Number);
   const endH = h + 2;
   return `${endH < 10 ? '0' : ''}${endH}:${m < 10 ? '0' : ''}${m || 0}`;
 }
+
+export const getBirthdayEndTime = getSlotEndTime;

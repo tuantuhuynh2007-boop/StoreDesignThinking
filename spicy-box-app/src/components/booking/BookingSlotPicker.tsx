@@ -6,7 +6,7 @@ import {
   type BookingSlotMetric,
   type BookingTableType,
 } from '../../bookingSlots';
-import { SESSION_SLOTS, BIRTHDAY_SLOTS, getBirthdayEndTime } from '../../data/constants';
+import { SESSION_SLOTS, BIRTHDAY_SLOTS, getSlotEndTime } from '../../data/constants';
 
 interface BookingSlotPickerProps {
   tableType: BookingTableType;
@@ -59,7 +59,7 @@ function SlotButton({
   const visualState = isUnavailable ? 'unavailable' : isSelected ? 'processing' : state;
   const disabled = isUnavailable || Boolean(claimingSlot) || (state !== 'available' && !isSelected);
   const remaining = getRemainingTables(metric, tableType);
-  const endTime = isBirthday ? getBirthdayEndTime(timeSlot) : '';
+  const endTime = getSlotEndTime(timeSlot);
 
   return (
     <button
@@ -71,8 +71,7 @@ function SlotButton({
     >
       <span className="booking-slot__top">
         <strong>
-          <AlarmClock size={15} aria-hidden="true" />{' '}
-          {isBirthday ? `${timeSlot} – ${endTime}` : timeSlot}
+          <AlarmClock size={15} aria-hidden="true" /> {timeSlot} – {endTime}
         </strong>
         <em>
           {isClaiming && <Loader2 size={13} className="animate-spin" aria-hidden="true" />}
@@ -82,8 +81,8 @@ function SlotButton({
             ? 'Đang giữ…'
             : isSelected
             ? 'Bạn đang giữ'
-            : isBirthday && state === 'full'
-            ? '✕ Hết suất'
+            : state === 'full'
+            ? '✕ Hết chỗ'
             : STATE_LABELS[state]}
         </em>
       </span>
@@ -104,10 +103,10 @@ function SlotButton({
                 : isSelected
                 ? `Đang giữ ca ${timeSlot} – ${endTime} (2 tiếng)`
                 : state === 'available'
-                ? `Trọn gói 2 tiếng (trống đến ${endTime})`
+                ? ''
                 : state === 'processing'
                 ? 'Đang có khách giữ chỗ'
-                : `Bận đến ${endTime} · Trống lúc ${endTime}`}
+                : `Bận đến ${endTime} · Trống ca lúc ${endTime}`}
             </small>
           </>
         ) : (
@@ -118,12 +117,12 @@ function SlotButton({
               {isUnavailable
                 ? 'Tạm khóa chọn giờ'
                 : isSelected
-                ? 'Giữ trong 10 phút'
+                ? `Đang giữ ca ${timeSlot} – ${endTime} (2 tiếng)`
                 : state === 'available'
-                ? `Còn ${remaining} bàn`
+                ? `Còn ${remaining} bàn trống`
                 : state === 'processing'
-                ? 'Đang chờ xác nhận'
-                : 'Đã đủ sức chứa'}
+                ? 'Đang có khách giữ chỗ'
+                : `Hết bàn ca này · Trống lúc ${endTime}`}
             </small>
           </>
         )}
@@ -172,7 +171,7 @@ export function BookingSlotPicker({
           <p>
             {isBirthday
               ? 'Bàn sinh nhật trung tâm · Duy nhất 1 suất mỗi ca 2 tiếng'
-              : `Tối đa ${capacity} bàn online mỗi khung giờ`}
+              : `Bàn tiêu chuẩn · Tối đa ${capacity} bàn online mỗi ca 2 tiếng`}
           </p>
         </div>
         <span className="booking-realtime__live">
@@ -189,7 +188,7 @@ export function BookingSlotPicker({
         >
           <span><Users size={16} aria-hidden="true" /> Bàn tiêu chuẩn</span>
           <strong>1–4 người / bàn</strong>
-          <em>5 bàn online</em>
+          <em>5 bàn online · Ca 2 tiếng</em>
         </button>
         <button
           type="button"
@@ -199,7 +198,7 @@ export function BookingSlotPicker({
         >
           <span><CakeSlice size={16} aria-hidden="true" /> Bàn sinh nhật</span>
           <strong>8–12 người · Trung tâm quán</strong>
-          <em>1 suất / 2 tiếng</em>
+          <em>1 suất / Ca 2 tiếng</em>
         </button>
       </div>
 
@@ -208,9 +207,11 @@ export function BookingSlotPicker({
           <span>{isBirthday ? 'Bàn sinh nhật · Trung tâm quán' : 'Chọn số lượng người'}</span>
           <strong>{isBirthday ? 'Chọn 8–12 khách' : 'Tối đa 4 người'}</strong>
         </div>
-        {isBirthday && (
-          <p>Bàn tiệc trang trí đẹp nhất quán, mỗi ca cố định 2 tiếng để trang trí và dùng bữa.</p>
-        )}
+        <p>
+          {isBirthday
+            ? 'Bàn tiệc trang trí đẹp nhất quán, mỗi ca cố định 2 tiếng để trang trí và dùng bữa.'
+            : 'Mỗi ca ăn lẩu phục vụ trọn vẹn trong 2 tiếng, sau 2 tiếng bàn trống đón ca tiếp theo.'}
+        </p>
         <div className="booking-party-size__options">
           {partySizes.map(size => (
             <button
@@ -234,21 +235,23 @@ export function BookingSlotPicker({
 
       <div className="booking-selection-note">
         {selectedSlot
-          ? isBirthday
-            ? `Đang giữ bàn sinh nhật ca ${selectedSlot} – ${getBirthdayEndTime(selectedSlot)} (trọn vẹn 2 tiếng) cho ${partySize} khách.`
-            : `Đang giữ bàn tiêu chuẩn lúc ${selectedSlot} cho ${partySize} người trong 10 phút.`
-          : `Đã chọn bàn ${isBirthday ? 'sinh nhật' : 'tiêu chuẩn'} cho ${partySize} người.`}
+          ? `Đang giữ ${isBirthday ? 'bàn sinh nhật' : 'bàn tiêu chuẩn'} ca ${selectedSlot} – ${getSlotEndTime(selectedSlot)} (2 tiếng) cho ${partySize} khách.`
+          : `Đã chọn ${isBirthday ? 'bàn sinh nhật' : 'bàn tiêu chuẩn'} cho ${partySize} người.`}
       </div>
 
       <div className="booking-state-legend" aria-label="Trạng thái khung giờ">
         <div className="is-available"><strong><Circle size={10} fill="currentColor" /> Còn trống</strong><span>Có thể chọn ca</span></div>
         <div className="is-processing"><strong><Circle size={10} fill="currentColor" /> Đang xử lý</strong><span>Đang được giữ chỗ</span></div>
-        <div className="is-full"><strong><Circle size={10} fill="currentColor" /> Hết chỗ</strong><span>Đã có tiệc đặt</span></div>
+        <div className="is-full"><strong><Circle size={10} fill="currentColor" /> Hết chỗ</strong><span>Đã kín chỗ ca này</span></div>
       </div>
 
       <div className="booking-slot-heading">
-        <strong>Khung giờ đặt bàn</strong>
-        <span>{isBirthday ? '1 suất duy nhất · Cách nhau 2 tiếng' : `Tối đa ${capacity} bàn`}</span>
+        <strong>Khung giờ các ca đặt bàn (Cách nhau 2 tiếng)</strong>
+        <span>{isBirthday ? '1 suất duy nhất' : `Tối đa ${capacity} bàn / ca`}</span>
+      </div>
+
+      <div style={{ fontSize: '12px', color: '#92400E', background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: '12px', padding: '10px 14px', marginBottom: '14px', lineHeight: 1.5 }}>
+        ⏰ <strong>Quy định ca phục vụ:</strong> Mỗi ca đặt trọn gói 2 tiếng (09:00–11:00, 11:00–13:00,...). Khi có khách dùng bữa lúc <strong>09:00</strong> thì bàn phục vụ đến <strong>11:00</strong> mới trống để đón lượt khách ca tiếp theo.
       </div>
 
       {actionError && (
@@ -267,13 +270,7 @@ export function BookingSlotPicker({
       {isBirthday ? (
         <div className="booking-slot-session">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-            <h3>🎂 Khung giờ tiệc sinh nhật (Trọn gói 2 tiếng/ca)</h3>
-            <span style={{ fontSize: '11px', fontWeight: 700, color: '#B45309', background: '#FEF3C7', padding: '2px 8px', borderRadius: '999px' }}>
-              Mỗi ca cách nhau 2 tiếng
-            </span>
-          </div>
-          <div style={{ fontSize: '12px', color: '#92400E', background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: '12px', padding: '10px 14px', marginBottom: '12px', lineHeight: 1.5 }}>
-            ⏰ <strong>Quy định phục vụ bàn sinh nhật VIP:</strong> Mỗi ca đặt trọn gói 2 tiếng (09:00–11:00, 11:00–13:00,...). Khi có khách đặt ca <strong>09:00</strong> thì bàn phục vụ đến <strong>11:00</strong> mới trống để đón ca tiếp theo.
+            <h3>🎂 Khung giờ tiệc sinh nhật (1 suất duy nhất / ca 2 tiếng)</h3>
           </div>
           <div className="booking-slot-grid">
             {BIRTHDAY_SLOTS.map(timeSlot => (
