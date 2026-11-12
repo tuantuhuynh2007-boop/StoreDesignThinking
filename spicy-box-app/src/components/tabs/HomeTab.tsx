@@ -306,7 +306,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
             <BookOpen size={20} />
           </div>
           <div style={{ fontSize: '14px', fontWeight: 700 }}>Sổ Vịt 4 Mùa</div>
-          <div style={{ fontSize: '12px', color: 'var(--wood-medium)' }}>{unlockedCount}/6 biểu cảm</div>
+          <div style={{ fontSize: '12px', color: 'var(--wood-medium)' }}>{unlockedCount}/4 biểu cảm</div>
         </div>
 
         <div

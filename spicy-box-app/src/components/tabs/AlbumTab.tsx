@@ -109,7 +109,7 @@ export const AlbumTab: React.FC<AlbumTabProps> = ({
           }}
         >
           <span>Tiến độ mùa hiện tại</span>
-          <span>{unlockedCount} / 6 Vịt</span>
+          <span>{unlockedCount} / {seasonMascots.length} Vịt</span>
         </div>
         <div
           style={{
@@ -122,7 +122,7 @@ export const AlbumTab: React.FC<AlbumTabProps> = ({
         >
           <div
             style={{
-              width: `${(unlockedCount / 6) * 100}%`,
+              width: `${(unlockedCount / seasonMascots.length) * 100}%`,
               height: '100%',
               background: 'var(--gold-accent)',
               borderRadius: 99,
@@ -130,11 +130,11 @@ export const AlbumTab: React.FC<AlbumTabProps> = ({
           ></div>
         </div>
         <p style={{ fontSize: '11px', color: '#92400E', marginTop: '6px' }}>
-          ★ Gom đủ 6/6 biểu cảm để nhận <strong>01 Vòng Phô Mai Kéo Sợi</strong> miễn phí!
+          ★ Gom đủ {seasonMascots.length}/{seasonMascots.length} biểu cảm để nhận <strong>01 Vòng Phô Mai Kéo Sợi</strong> miễn phí!
         </p>
       </div>
 
-      {/* 6 Ducks Grid */}
+      {/* Ducks Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
         {seasonMascots.map(duck => (
           <div

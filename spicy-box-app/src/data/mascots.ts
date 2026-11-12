@@ -25,17 +25,6 @@ export const INITIAL_MASCOTS: Mascot[] = [
     dropRate: 25
   },
   {
-    id: 'hw-3',
-    season: 'HALLOWEEN',
-    emotion: 'MEU_MAO',
-    name: 'Vịt Bí Ngô: Mếu Máo',
-    image: '/assets/ducks/halloween_meu_mao.png',
-    rarity: 'COMMON',
-    isUnlocked: false,
-    count: 0,
-    dropRate: 15
-  },
-  {
     id: 'hw-4',
     season: 'HALLOWEEN',
     emotion: 'CHU_MO',
@@ -57,18 +46,6 @@ export const INITIAL_MASCOTS: Mascot[] = [
     count: 0,
     dropRate: 10
   },
-  {
-    id: 'hw-6',
-    season: 'HALLOWEEN',
-    emotion: 'VUI_VE',
-    name: 'Vịt Bí Ngô: Vui Vẻ Cười Tươi',
-    image: '/assets/ducks/halloween_vui_ve.png',
-    rarity: 'COMMON',
-    isUnlocked: true,
-    count: 1,
-    dropRate: 30
-  },
-
   // --- CHRISTMAS ---
   {
     id: 'xmas-1',
@@ -93,17 +70,6 @@ export const INITIAL_MASCOTS: Mascot[] = [
     dropRate: 25
   },
   {
-    id: 'xmas-3',
-    season: 'CHRISTMAS',
-    emotion: 'MEU_MAO',
-    name: 'Vịt Noel: Mếu Máo',
-    image: '/assets/ducks/christmas_meu_mao.png',
-    rarity: 'COMMON',
-    isUnlocked: false,
-    count: 0,
-    dropRate: 15
-  },
-  {
     id: 'xmas-4',
     season: 'CHRISTMAS',
     emotion: 'CHU_MO',
@@ -125,18 +91,6 @@ export const INITIAL_MASCOTS: Mascot[] = [
     count: 0,
     dropRate: 10
   },
-  {
-    id: 'xmas-6',
-    season: 'CHRISTMAS',
-    emotion: 'VUI_VE',
-    name: 'Vịt Noel: Vui Vẻ Bên Cây Thông',
-    image: '/assets/ducks/christmas_vui_ve.png',
-    rarity: 'COMMON',
-    isUnlocked: true,
-    count: 1,
-    dropRate: 30
-  },
-
   // --- TET ---
   {
     id: 'tet-1',
@@ -161,17 +115,6 @@ export const INITIAL_MASCOTS: Mascot[] = [
     dropRate: 25
   },
   {
-    id: 'tet-3',
-    season: 'TET',
-    emotion: 'MEU_MAO',
-    name: 'Vịt Tết: Mếu Máo Ôm Bánh Chưng',
-    image: '/assets/ducks/tet_meu_mao.png',
-    rarity: 'COMMON',
-    isUnlocked: false,
-    count: 0,
-    dropRate: 15
-  },
-  {
     id: 'tet-4',
     season: 'TET',
     emotion: 'CHU_MO',
@@ -193,18 +136,6 @@ export const INITIAL_MASCOTS: Mascot[] = [
     count: 0,
     dropRate: 10
   },
-  {
-    id: 'tet-6',
-    season: 'TET',
-    emotion: 'VUI_VE',
-    name: 'Vịt Tết: Cung Chúc Tân Xuân',
-    image: '/assets/ducks/tet_vui_ve.png',
-    rarity: 'COMMON',
-    isUnlocked: true,
-    count: 2,
-    dropRate: 30
-  },
-
   // --- MIDAUTUMN ---
   {
     id: 'ma-1',
@@ -229,17 +160,6 @@ export const INITIAL_MASCOTS: Mascot[] = [
     dropRate: 25
   },
   {
-    id: 'ma-3',
-    season: 'MIDAUTUMN',
-    emotion: 'MEU_MAO',
-    name: 'Vịt Trung Thu: Mếu Máo Dưới Trăng',
-    image: '/assets/ducks/midautumn_meu_mao.png',
-    rarity: 'COMMON',
-    isUnlocked: false,
-    count: 0,
-    dropRate: 15
-  },
-  {
     id: 'ma-4',
     season: 'MIDAUTUMN',
     emotion: 'CHU_MO',
@@ -260,16 +180,5 @@ export const INITIAL_MASCOTS: Mascot[] = [
     isUnlocked: false,
     count: 0,
     dropRate: 10
-  },
-  {
-    id: 'ma-6',
-    season: 'MIDAUTUMN',
-    emotion: 'VUI_VE',
-    name: 'Vịt Trung Thu: Rước Đèn Vui Vẻ',
-    image: '/assets/ducks/midautumn_vui_ve.png',
-    rarity: 'COMMON',
-    isUnlocked: true,
-    count: 1,
-    dropRate: 30
   }
 ];
