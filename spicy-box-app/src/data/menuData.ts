@@ -9,6 +9,9 @@ export interface MenuItem {
   highlight?: string;
 }
 
+const commonsImage = (fileName: string) =>
+  `https://commons.wikimedia.org/wiki/Special:Redirect/file/${encodeURIComponent(fileName)}?width=600`;
+
 export const MENU_CATEGORIES = [
   { key: 'all', label: 'Tất cả món' },
   { key: 'tokpokki', label: '🍲 Bánh Gạo & Chả Cá' },
@@ -29,7 +32,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '치즈 떡볶이 (Cheese Tokpokki)',
     category: 'tokpokki',
     desc: 'Bánh gạo mềm dẻo bọc nhân phô mai Mozzarella béo ngậy tan chảy khi đun trong nước lẩu.',
-    image: 'https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Cheese-tteok-bokki.jpg'),
     badge: 'Best Seller ⭐',
     highlight: 'Nhân phô mai tan chảy',
   },
@@ -39,7 +42,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '고구마 떡 (Sweet Potato Tok)',
     category: 'tokpokki',
     desc: 'Lớp vỏ bánh gạo tím tự nhiên ôm trọn nhân khoai lang vàng bùi bùi, ngọt thanh dịu nhẹ.',
-    image: 'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Roasted sweet potatoes and garae-tteok.png'),
     badge: 'Buffet Thả Ga',
   },
   {
@@ -48,7 +51,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '가래떡 (Garaetteok)',
     category: 'tokpokki',
     desc: 'Gạo xay nguyên chất dẻo dai chuẩn phong cách đường phố Seoul, thấm đẫm nước sốt lẩu.',
-    image: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Korean.food-teok-01.jpg'),
     badge: 'Buffet Thả Ga',
   },
   {
@@ -57,7 +60,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '부산 어묵 (Busan Eomuk)',
     category: 'tokpokki',
     desc: 'Chả cá Hàn Quốc trứ danh Busan vị ngọt bùi tự nhiên từ thịt cá xay, dai mềm không bở.',
-    image: 'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Busan-eomuk.jpg'),
     badge: 'Best Seller ⭐',
     highlight: 'Chuẩn vị Busan',
   },
@@ -67,7 +70,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '사각 어묵 (Square Eomuk)',
     category: 'tokpokki',
     desc: 'Miếng chả cá cắt bản dày, nhúng lẩu càng lâu càng đậm đà gia vị sốt.',
-    image: 'https://images.unsplash.com/photo-1541832676-9b763b0239ab?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Eomuk-bokkeum 1.jpg'),
     badge: 'Buffet Thả Ga',
   },
   {
@@ -76,7 +79,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '맛살 (Crab Stick)',
     category: 'tokpokki',
     desc: 'Thanh cua ngọt mát xé sợi nhúng lẩu Tokpokki ăn kèm các loại rau củ thanh đạm.',
-    image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Kanikama.jpg'),
     badge: 'Buffet Thả Ga',
   },
 
@@ -87,7 +90,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '우삼겹 (US Beef Shortplate)',
     category: 'meat',
     desc: 'Từng lát ba chỉ bò Mỹ vân mỡ đều đặn, nhúng chín tới mềm tan trong nước lẩu cay ngọt đậm đà.',
-    image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Raw Beef Ribeye Slices for Hot Pot.jpg'),
     badge: 'Best Seller ⭐',
     highlight: 'Bò Mỹ tươi nạp liên tục',
   },
@@ -97,7 +100,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '삼겹살 (Sliced Pork Belly)',
     category: 'meat',
     desc: 'Thịt heo tươi thái lát mỏng vừa miệng, ngấm trọn vị sốt tương ớt Gochujang cay nồng.',
-    image: 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Samgyeopsal (pork belly).jpg'),
     badge: 'Buffet Thả Ga',
   },
   {
@@ -106,7 +109,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '어묵볼 (Fish & Shrimp Balls)',
     category: 'meat',
     desc: 'Viên tôm cá giòn sần sật, cắn ngập miệng cảm nhận vị ngọt tự nhiên.',
-    image: 'https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Fish balls and Octopus Balls at Hot Pot day.jpg'),
     badge: 'Buffet Thả Ga',
   },
   {
@@ -115,7 +118,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '비엔나 소시지 (Vienna Sausage)',
     category: 'meat',
     desc: 'Xúc xích xông khói cắt khía nở hoa bung xòe khi đun sôi trong nồi lẩu.',
-    image: 'https://images.unsplash.com/photo-1585325701165-351af916e581?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('タコさんウインナー.jpg'),
     badge: 'Buffet Thả Ga',
   },
 
@@ -126,7 +129,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '양념 치킨 (Yangnyeom Chicken)',
     category: 'fried',
     desc: 'Thịt gà tươi chiên giòn rụm bên ngoài mọng nước bên trong, áo đẫm lớp sốt cay ngọt quyến rũ.',
-    image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Yangnyeom Chicken Korean fried chicken.jpg'),
     badge: 'Best Seller ⭐',
     highlight: 'Giòn rụm nóng hổi',
   },
@@ -136,7 +139,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '김말이 튀김 (Gimmari)',
     category: 'fried',
     desc: 'Món ăn vặt số 1 đường phố Hàn: miến ướp tiêu cuộn lá rong biển tẩm bột giòn tan, chấm sốt lẩu cực đã.',
-    image: 'https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Gimmari 김말이C1.jpg'),
     badge: 'Best Seller ⭐',
     highlight: 'Chấm sốt lẩu siêu ngon',
   },
@@ -146,7 +149,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '군만두 (Fried Mandu)',
     category: 'fried',
     desc: 'Vỏ mỏng giòn rụm ôm nhân thịt heo xay, hẹ tươi và miến thơm phức.',
-    image: 'https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage("Fried Korean dumplings, L'Arbre de Sel, Paris 23 May 2016.jpg"),
     badge: 'Buffet Thả Ga',
   },
   {
@@ -155,7 +158,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '고구마 맛탕 (Mattang)',
     category: 'fried',
     desc: 'Khoai lang chiên vàng óng phủ lớp caramel đường giòn bóng bẩy rắc mè rang thơm lừng.',
-    image: 'https://images.unsplash.com/photo-1596560548464-f010549b84d7?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Korea.desserts-Mat.tang-01.jpg'),
     badge: 'Buffet Thả Ga',
   },
 
@@ -166,7 +169,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '스파이시 박스 소스',
     category: 'sauce',
     desc: 'Công thức độc quyền pha chế từ tương ớt lên men Hàn Quốc, cay nồng và bùng nổ vị giác.',
-    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Gochujang (chilli paste).jpg'),
     badge: 'Đặc Trưng',
     highlight: 'Công thức độc quyền',
   },
@@ -176,7 +179,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '짜장 소스 (Jjajang Sauce)',
     category: 'sauce',
     desc: 'Vị tương đen bùi ngậy, ngọt dịu phù hợp cho trẻ em hoặc khách không thích ăn cay.',
-    image: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Chunjang.jpg'),
     badge: 'Buffet Thả Ga',
   },
   {
@@ -195,7 +198,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '궁중 떡볶이 소스 (Gungjung)',
     category: 'sauce',
     desc: 'Sốt xì dầu tỏi mè hoàng gia, ngọt thanh nhẹ nhàng chuẩn vị truyền thống.',
-    image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Ganjang-tteok-bokki.jpg'),
     badge: 'Buffet Thả Ga',
   },
 
@@ -206,7 +209,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '팽이버섯 (Enoki)',
     category: 'veggie',
     desc: 'Nấm kim châm trắng giòn tươi ngọt, nhúng lẩu tokpokki ăn giòn sần sật vui miệng.',
-    image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Enoki mushroom.jpg'),
     badge: 'Buffet Thả Ga',
   },
   {
@@ -215,7 +218,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '새송이버섯 (King Oyster)',
     category: 'veggie',
     desc: 'Nấm đùi gà chắc nịch ngọt nước, hấp thụ toàn bộ tinh túy nước sốt cay đậm đà.',
-    image: 'https://images.unsplash.com/photo-1506802913710-40e2e66339c9?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Pleurotus eryngii (de Kräuterseitling) cultivated in Korea, sold in Austria, 20100127.jpg'),
     badge: 'Buffet Thả Ga',
   },
   {
@@ -233,7 +236,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '배추 & 청경채 (Cabbage & Bok Choy)',
     category: 'veggie',
     desc: 'Rau xanh nhập mới mỗi ngày, tươi non thanh mát giải ngấy tức thì.',
-    image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Brassica rapa var. chinensis (leaf).jpg'),
     badge: 'Buffet Thả Ga',
   },
 
@@ -254,7 +257,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '중국 당면 (Flat Glass Noodles)',
     category: 'noodle',
     desc: 'Miến dẹt bản to mềm dẻo ngậm sốt bóng bẩy, món ăn kèm hot trend không thể thiếu.',
-    image: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Sweet potato wide noodles.jpg'),
     badge: 'Best Seller ⭐',
     highlight: 'Hot trend ngập sốt',
   },
@@ -266,7 +269,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '참치 주먹밥 (Jumeokbap)',
     category: 'side',
     desc: 'Cơm dẻo trộn cá ngừ sốt mayo, rong biển vụn và dầu mè, khách tự tay nắm tròn theo ý thích.',
-    image: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Jumeok-bap 2.jpg'),
     badge: 'Best Seller ⭐',
     highlight: 'Tự tay nắm viên thơm béo',
   },
@@ -276,7 +279,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '배추김치 (Baechu Kimchi)',
     category: 'side',
     desc: 'Kim chi muối cay dịu chua thanh chuẩn vị truyền thống của các ajumma Hàn Quốc.',
-    image: 'https://images.unsplash.com/photo-1583032015879-623e8e19c018?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Baechu kimchi.jpg'),
     badge: 'Buffet Thả Ga',
   },
   {
@@ -285,7 +288,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '단무지 (Danmuji)',
     category: 'side',
     desc: 'Củ cải muối giòn sần sật chua ngọt giúp cân bằng vị cay và béo ngậy.',
-    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Chunjang danmuji yangpa kimchi.jpg'),
     badge: 'Buffet Thả Ga',
   },
 
@@ -296,7 +299,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '치즈링 퐁듀 (Cheese Ring)',
     category: 'extra',
     desc: 'Vòng phô mai Mozzarella nóng chảy viền quanh nồi lẩu, kéo sợi dài vô tận quấn thịt bò cực đỉnh.',
-    image: 'https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Fondue dish.jpg'),
     badge: 'Món Gọi Thêm',
     highlight: 'Kéo sợi bất tận',
   },
@@ -306,7 +309,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '무제한 음료 리필 (Soft Drinks)',
     category: 'extra',
     desc: 'Coca-Cola, Sprite, Fanta tươi mát lạnh lấy không giới hạn tại quầy nước giải khát.',
-    image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=600&auto=format&fit=crop&q=80',
+    image: commonsImage('Soda Fountain at KFC.jpg'),
     badge: 'Buffet Thả Ga',
   },
 ];
