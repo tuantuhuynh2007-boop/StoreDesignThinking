@@ -42,7 +42,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '고구마 떡 (Sweet Potato Tok)',
     category: 'tokpokki',
     desc: 'Lớp vỏ bánh gạo tím tự nhiên ôm trọn nhân khoai lang vàng bùi bùi, ngọt thanh dịu nhẹ.',
-    image: commonsImage('Roasted sweet potatoes and garae-tteok.png'),
+    image: 'https://riceshow.or.kr/_files/product//product_202506070359200.jpg',
     badge: 'Buffet Thả Ga',
   },
   {
@@ -100,7 +100,7 @@ export const SPICY_BOX_MENU: MenuItem[] = [
     koreanName: '삼겹살 (Sliced Pork Belly)',
     category: 'meat',
     desc: 'Thịt heo tươi thái lát mỏng vừa miệng, ngấm trọn vị sốt tương ớt Gochujang cay nồng.',
-    image: commonsImage('Samgyeopsal (pork belly).jpg'),
+    image: 'https://images.unsplash.com/photo-1559602580-78f1ba809b92?auto=format&fit=crop&q=80&w=600',
     badge: 'Buffet Thả Ga',
   },
   {
